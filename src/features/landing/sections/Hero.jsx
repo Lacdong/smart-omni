@@ -1,0 +1,58 @@
+import { useEffect, useRef } from 'react'
+import { Check, Link2, PackageSearch } from 'lucide-react'
+import { AuthActions } from '../components/TrialButton'
+import { DashboardPreview } from '../components/DashboardPreview'
+import { HeroRibbon } from '../components/HeroRibbon'
+import styles from './Hero.module.css'
+
+export function Hero() {
+  const stageRef = useRef(null)
+
+  useEffect(() => {
+    const stage = stageRef.current
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const pointer = window.matchMedia('(pointer: fine)')
+    if (!stage || motion.matches || !pointer.matches) return
+    let frame = 0
+    const move = (event) => {
+      const rect = stage.getBoundingClientRect()
+      const x = (event.clientX - rect.left) / rect.width - .5
+      const y = (event.clientY - rect.top) / rect.height - .5
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        stage.style.setProperty('--tilt-x', `${(-y * 2.5).toFixed(2)}deg`)
+        stage.style.setProperty('--tilt-y', `${(x * 3).toFixed(2)}deg`)
+      })
+    }
+    const reset = () => { stage.style.setProperty('--tilt-x', '0deg'); stage.style.setProperty('--tilt-y', '0deg') }
+    stage.addEventListener('pointermove', move)
+    stage.addEventListener('pointerleave', reset)
+    return () => { cancelAnimationFrame(frame); stage.removeEventListener('pointermove', move); stage.removeEventListener('pointerleave', reset) }
+  }, [])
+
+  return <section className={styles.hero} id="product" aria-labelledby="hero-title">
+    <span className={styles.sentinel} data-page-top aria-hidden="true" />
+    <HeroRibbon />
+    <div className={styles.copy}>
+      <p className={styles.eyebrow}><span /> MULTI-CHANNEL, MADE CLEAR</p>
+      <h1 id="hero-title">One workspace for<br className={styles.desktopBreak} /> every sales channel.</h1>
+      <p className={styles.subtitle}>Connect Shopee and TikTok Shop, sync your products, manage orders and inventory, and run your store from one unified workspace.</p>
+      <AuthActions />
+      <p className={styles.context}>Built for merchants selling on <strong>Shopee</strong> and <strong>TikTok Shop</strong>.</p>
+    </div>
+    <div className={styles.stage} ref={stageRef} aria-label="Illustrative SmartOmni dashboard with products and marketplace listings">
+      <div className={styles.stageInner}>
+        <span className={styles.orbit} aria-hidden="true" />
+        <DashboardPreview className={styles.dashboard} />
+        <div className={styles.listingCard} aria-hidden="true">
+          <span className={styles.miniIcon}><Link2 size={16} /></span>
+          <span><small>CHANNEL LISTINGS</small><strong>One SKU, two shops</strong><em><span>S</span> Shopee <b>+</b> <span>♪</span> TikTok Shop</em></span>
+        </div>
+        <div className={styles.mappingCard} aria-hidden="true">
+          <span className={styles.miniIcon}><PackageSearch size={16} /></span>
+          <span><small>MAPPING REVIEW</small><strong>Catalog stays organized</strong><em><Check size={13} /> 3 mapped · 1 to review</em></span>
+        </div>
+      </div>
+    </div>
+  </section>
+}

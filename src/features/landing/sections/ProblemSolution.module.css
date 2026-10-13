@@ -1,0 +1,10 @@
+.section { padding: 122px 24px 126px; background: #fafafa; }
+.inner { max-width: 1190px; margin: auto; }
+.grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 58px; }
+.card { min-height: 264px; padding: 29px; border: 1px solid #eaeaea; border-radius: 18px; background: #fff; }
+.icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #eaeaea; border-radius: 11px; background: #fbfbfb; }
+.problem { min-height: 48px; margin: 26px 0 11px; color: #666; font-size: 16px; line-height: 1.4; letter-spacing: -.02em; text-wrap: pretty; }
+.arrow { color: #c5c5c5; transform: rotate(90deg); }
+.solution { margin: 12px 0 0; color: #1e1e1e; font-size: 17px; font-weight: 650; line-height: 1.38; letter-spacing: -.035em; }
+@media (max-width: 800px) { .grid { grid-template-columns: 1fr; gap: 12px; } .card { min-height: 0; padding: 23px; } .problem { min-height: 0; margin-top: 16px; } }
+@media (max-width: 600px) { .section { padding: 86px 18px; } .grid { margin-top: 35px; } }
