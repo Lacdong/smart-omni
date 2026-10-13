@@ -1,4 +1,4 @@
-// Stable landing copy and navigation; operational samples live behind an adapter.
+// Stable landing copy and navigation; illustrative samples live in previewData.js.
 export const navigation = [
   { label: 'Product', href: '#product' },
   { label: 'Features', href: '#features' },

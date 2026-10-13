@@ -1,7 +1,7 @@
 import { Headphones, Keyboard, LayoutDashboard, Mouse, Package, ShoppingBag, Boxes } from 'lucide-react'
 import { BrandWordmark } from '@/shared/components/Brand'
 import { cn } from '@/shared/lib/utils'
-import { landingPreview } from '@/services/adapters/landingPreview'
+import { landingPreviewFixture as landingPreview } from '../data/previewData'
 import styles from './DashboardPreview.module.css'
 
 const icons = { mouse: Mouse, headphones: Headphones, keyboard: Keyboard, tote: ShoppingBag }

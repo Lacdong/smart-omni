@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { RootLayout } from '@/layouts/RootLayout'
 import { LandingPage } from '@/features/landing/LandingPage'
-import { AuthPlaceholder } from '@/features/auth/pages/AuthPlaceholder'
+import { AuthPlaceholder } from '@/features/auth/AuthPlaceholder'
 import { NotFoundPage } from '@/app/NotFoundPage'
 
 export const router = createBrowserRouter([
