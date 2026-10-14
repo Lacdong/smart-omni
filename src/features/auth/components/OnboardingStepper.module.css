@@ -1,0 +1,18 @@
+.stepper { width: 100%; max-width: 1008px; margin: 0 auto; padding: 32px 24px; }
+.stepper ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 0; margin: 0; list-style: none; gap: 16px; }
+.stepper li a, .locked { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 12px; line-height: 1.4; text-decoration: none; color: var(--color-muted-foreground); }
+.stepper a:hover { color: var(--color-foreground); }
+.number { display: grid; place-items: center; width: 32px; height: 32px; flex: none; border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-background); font-weight: 600; }
+.current a { color: var(--color-foreground); font-weight: 600; }
+.current .number { background: var(--color-primary); color: var(--color-primary-foreground); border-color: var(--color-primary); box-shadow: 0 0 0 4px rgb(162 148 240 / .15); }
+.done .number { color: var(--color-foreground); }
+.compact, .rail { display: none; }
+@media (max-width: 760px) {
+  .stepper { padding: 24px 20px; }
+  .stepper ol { display: none; }
+  .compact { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; }
+  .compact > span { color: var(--color-muted-foreground); }
+  .compact strong { font-weight: 600; }
+  .rail { display: block; margin-top: 12px; height: 4px; border-radius: 4px; background: var(--color-border); overflow: hidden; }
+  .rail > span { display: block; height: 100%; background: linear-gradient(90deg, #a78bfa, #76bcdd); transition: width .3s ease; }
+}

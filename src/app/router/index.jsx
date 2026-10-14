@@ -1,7 +1,15 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { RootLayout } from '@/layouts/RootLayout'
 import { LandingPage } from '@/features/landing/LandingPage'
-import { AuthPlaceholder } from '@/features/auth/AuthPlaceholder'
+import { LoginPage } from '@/features/auth/pages/LoginPage'
+import { RegisterPage } from '@/features/auth/pages/RegisterPage'
+import { StaffRegisterPage } from '@/features/auth/pages/StaffRegisterPage'
+import { OwnerOnboardingLayout } from '@/features/auth/components/OwnerOnboardingLayout'
+import { OwnerBasicInfo } from '@/features/auth/onboarding/OwnerBasicInfo'
+import { SelectPlan } from '@/features/auth/onboarding/SelectPlan'
+import { ConfigureChannels } from '@/features/auth/onboarding/ConfigureChannels'
+import { ConfigureImport } from '@/features/auth/onboarding/ConfigureImport'
+import { WelcomePage } from '@/features/auth/onboarding/WelcomePage'
 import { NotFoundPage } from '@/app/NotFoundPage'
 
 export const router = createBrowserRouter([
@@ -9,8 +17,16 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { path: '/', element: <LandingPage /> },
-      { path: '/auth/login', element: <AuthPlaceholder mode="login" /> },
-      { path: '/auth/register', element: <AuthPlaceholder mode="register" /> },
+      { path: '/auth/login', element: <LoginPage /> },
+      { path: '/auth/register', element: <RegisterPage /> },
+      { path: '/auth/register/staff', element: <StaffRegisterPage /> },
+      { path: '/auth/register/owner', element: <OwnerOnboardingLayout />, children: [
+        { index: true, element: <OwnerBasicInfo /> },
+        { path: 'plan', element: <SelectPlan /> },
+        { path: 'channels', element: <ConfigureChannels /> },
+        { path: 'import', element: <ConfigureImport /> },
+        { path: 'welcome', element: <WelcomePage /> },
+      ] },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

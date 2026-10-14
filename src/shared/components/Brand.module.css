@@ -1,33 +1,21 @@
 @font-face {
-  font-family: 'Radon';
-  src: url('/Radon-Font/Radon_font/Radon%20Bold.woff2') format('woff2'),
-    url('/Radon-Font/Radon_font/Radon%20Bold.woff') format('woff');
+  font-family: 'Brolink';
+  src: url('/brolink/Brolink%20DEMO.otf') format('opentype');
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   font-display: swap;
 }
 
 .brand { display: inline-flex; align-items: center; min-height: 44px; flex: none; color: #141414; font-size: 19px; line-height: 1; text-decoration: none; white-space: nowrap; }
 .wordmark {
-  font-family: 'Radon', 'Avenir Next', sans-serif;
-  font-weight: 700;
+  font-family: 'Brolink', 'Avenir Next', sans-serif;
+  font-weight: 400;
   letter-spacing: -.015em;
-  color: #26283c;
-}
-
-@supports (-webkit-background-clip: text) {
-  .wordmark {
-    background: linear-gradient(110deg, #f24470 0%, #fb8b3f 16%, #f4c247 32%, #31be78 49%, #28bed5 65%, #5c8cf6 82%, #b16aee 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: .3px rgb(28 39 73 / .6);
-    filter: drop-shadow(0 0 3px rgb(62 150 248 / .28)) drop-shadow(0 0 8px rgb(190 85 239 / .16));
-  }
+  color: #000000;
 }
 
 @media (forced-colors: active) {
-  .wordmark { background: none; -webkit-text-fill-color: CanvasText; -webkit-text-stroke: 0; filter: none; }
+  .wordmark { color: CanvasText; }
 }
 
 @media (max-width: 700px) {

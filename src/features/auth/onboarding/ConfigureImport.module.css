@@ -1,0 +1,26 @@
+.grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; }
+.grid h2 { margin: 0; font-size: 16px; line-height: 1.5; font-weight: 600; }
+.grid h2:focus { outline: none; }
+.shops { display: grid; gap: 20px; list-style: none; margin: 24px 0; padding: 0; }
+.shops li { display: flex; gap: 12px; align-items: flex-start; }
+.shopIcon { display: grid; place-items: center; width: 36px; height: 36px; flex: none; border-radius: 8px; color: var(--color-muted-foreground); background: var(--color-muted); }
+.shops strong { display: block; font-size: 13px; line-height: 1.5; font-weight: 600; }
+.shops p { margin: 4px 0 0; font-size: 12px; line-height: 1.6; color: var(--color-muted-foreground); }
+.statusIcon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: var(--color-muted); color: var(--color-muted-foreground); margin-bottom: 20px; }
+.COMPLETED .statusIcon { color: #26734c; background: #eaf6ef; }
+.PARTIAL .statusIcon { color: #925a14; background: #fff5e5; }
+.FAILED .statusIcon { color: var(--color-destructive); background: #fff0f0; }
+.statusText { margin-top: 16px; }
+.statusText strong { font-size: 14px; font-weight: 600; }
+.statusText p { margin: 8px 0 0; font-size: 13px; line-height: 1.7; color: var(--color-muted-foreground); text-wrap: pretty; }
+.results { margin: 24px 0 0; display: grid; gap: 12px; border-top: 1px solid var(--color-border); padding-top: 20px; }
+.results > div { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; line-height: 1.6; }
+.results dt { color: var(--color-muted-foreground); }
+.results dd { margin: 0; font-size: 16px; font-weight: 600; }
+.start { width: 100%; min-height: 44px; border-radius: 12px; box-shadow: none; margin-top: 24px; }
+.scenarios { display: flex; flex-direction: column; gap: 20px; border: 1px dashed var(--color-ring); border-radius: 16px; padding: 24px; margin-top: 24px; background: var(--color-background); }
+.scenarios h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.scenarios p { margin: 4px 0 0; font-size: 12px; line-height: 1.6; color: var(--color-muted-foreground); }
+.scenarioActions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.scenarioActions button { min-height: 44px; border-radius: 12px; box-shadow: none; white-space: normal; }
+@media (max-width: 760px) { .grid { grid-template-columns: minmax(0, 1fr); gap: 16px; } .scenarios { padding: 20px; } .scenarioActions { grid-template-columns: minmax(0, 1fr); } }

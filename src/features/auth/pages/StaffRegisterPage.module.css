@@ -1,0 +1,9 @@
+.back { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; font-size: 13px; text-decoration: none; color: var(--color-muted-foreground); }
+.back:hover { color: var(--color-foreground); text-decoration: underline; text-underline-offset: 4px; }
+.previewNote { margin: 16px 0 0; text-align: center; color: var(--color-muted-foreground); font-size: 12px; line-height: 1.6; }
+.previewIcon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 24px; background: var(--color-muted); border-radius: 16px; }
+.nextSteps { display: grid; gap: 24px; padding: 0; margin: 32px 0; list-style: none; }
+.nextSteps li { display: flex; gap: 12px; }
+.nextSteps li > span { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--color-border); font-size: 12px; }
+.nextSteps strong { font-size: 13px; font-weight: 600; }
+.nextSteps p { margin: 4px 0 0; color: var(--color-muted-foreground); font-size: 12px; line-height: 1.6; text-wrap: pretty; }

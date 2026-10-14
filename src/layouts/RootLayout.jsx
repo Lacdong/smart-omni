@@ -6,6 +6,12 @@ const titles = {
   '/': 'SmartOmni — One workspace for every sales channel',
   '/auth/login': 'Sign in — SmartOmni',
   '/auth/register': 'Create your account — SmartOmni',
+  '/auth/register/staff': 'Team registration — SmartOmni',
+  '/auth/register/owner': 'Owner setup — SmartOmni',
+  '/auth/register/owner/plan': 'Select your plan — SmartOmni',
+  '/auth/register/owner/channels': 'Sales channels — SmartOmni',
+  '/auth/register/owner/import': 'Initial import — SmartOmni',
+  '/auth/register/owner/welcome': 'Welcome preview — SmartOmni',
 }
 
 export function RootLayout() {
