@@ -77,7 +77,7 @@ export function Header() {
       <defs>
         <filter id="smartomni-glass-refraction" x="-10%" y="-20%" width="120%" height="140%">
           <feTurbulence type="fractalNoise" baseFrequency="0.008 0.035" numOctaves="1" seed="8" result="surface" />
-          <feDisplacementMap in="SourceGraphic" in2="surface" scale="8" xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="SourceGraphic" in2="surface" scale="2" xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </defs>
     </svg>
