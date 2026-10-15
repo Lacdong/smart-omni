@@ -1,10 +1,58 @@
 .section { padding: 127px 24px; }
 .inner { max-width: 1190px; margin: auto; }
-.grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; margin-top: 58px; }
-.card { min-width: 0; padding: 30px 30px 0; overflow: hidden; border: 1px solid #e9e9e9; border-radius: 20px; background: #fdfdfd; }
-.cardTop { display: flex; align-items: center; justify-content: space-between; }.icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #e8e8e8; border-radius: 11px; background: #fff; }.number { color: #666; font-size: 11px; font-weight: 650; }
-.card h3 { margin: 23px 0 8px; font-size: 24px; font-weight: 680; letter-spacing: -.05em; }.card p { max-width: 400px; min-height: 47px; margin: 0 0 23px; color: #747474; font-size: 14px; line-height: 1.5; }
-.preview { min-height: 133px; padding: 18px 16px 12px; border: 1px solid #ebebeb; border-bottom: 0; border-radius: 11px 11px 0 0; background: #fff; box-shadow: 0 4px 18px rgb(0 0 0 / .025); }
-.sampleLabel { display: block; margin-bottom: 9px; color: #666; font-size: 9px; font-weight: 750; letter-spacing: .11em; }.sampleLine { display: flex; align-items: center; gap: 8px; min-height: 35px; border-top: 1px solid #f0f0f0; color: #515151; font-size: 10px; white-space: nowrap; }.sampleLine b { font-weight: 700; }.sampleLine small { margin-left: auto; color: #666; font-size: 9px; }.sampleDot { width: 20px; height: 20px; border-radius: 5px; background: #ebe9e6; }.bar { width: 40px; height: 4px; margin-left: auto; border-radius: 5px; background: #ececec; }.bar i { display: block; width: 75%; height: 100%; border-radius: inherit; background: #767676; }.avatar { display: grid; place-items: center; width: 19px; height: 19px; border-radius: 50%; background: #e9e9e9; font-size: 9px; font-weight: 700; }
-@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .section { padding: 86px 18px; } .grid { margin-top: 36px; }.card { padding: 23px 23px 0; } }
+.list { margin-top: 64px; }
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 64px;
+  padding-block: 40px;
+}
+.feature + .feature { border-top: 1px solid #d5d5d5; }
+.content { max-width: 470px; }
+.content h3 {
+  display: inline-block;
+  position: relative;
+  margin: 0 0 22px;
+  padding-bottom: 10px;
+  color: var(--color-foreground);
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+.content h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 60px; height: 1px; background: currentColor; }
+.content p { margin: 0; color: #515151; font-size: 16px; line-height: 1.55; text-wrap: pretty; }
+.number {
+  justify-self: end;
+  color: #242424;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(160px, 22vw, 280px);
+  line-height: .86;
+  font-weight: 900;
+  letter-spacing: -.07em;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(1);
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .number { background-color: #242424; background-clip: text; -webkit-background-clip: text; color: transparent; }
+}
+.feature:nth-child(even) .content { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; }
+.feature:nth-child(even) .content h3::after { left: auto; right: 0; }
+.feature:nth-child(even) .number { grid-column: 1; grid-row: 1; justify-self: start; }
+@media (max-width: 768px) {
+  .feature { gap: 32px; padding-block: 32px; }
+  .content p { font-size: 14px; }
+  .number { font-size: clamp(120px, 24vw, 184px); }
+}
+@media (max-width: 600px) {
+  .section { padding: 86px 18px; }
+  .list { margin-top: 36px; }
+  .feature { gap: 16px; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); }
+  .feature:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr); }
+  .content h3 { margin-bottom: 14px; font-size: 20px; letter-spacing: -.035em; }
+  .content p { font-size: 13px; line-height: 1.5; }
+  .number { font-size: clamp(88px, 24vw, 144px); }
+}
