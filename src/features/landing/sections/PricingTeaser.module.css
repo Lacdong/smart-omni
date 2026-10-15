@@ -22,10 +22,12 @@
 }
 
 .premiumCard {
+  --gradient-rim-colors: #f05a75, #f8a855, #f2d95b, #59c883, #55cce1, #668df3, #ab71e8, #f05a75;
   border-color: transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    conic-gradient(from 140deg, #f05a75, #f8a855, #f2d95b, #59c883, #55cce1, #668df3, #ab71e8, #f05a75) border-box;
+    var(--gradient-rim-shine) border-box,
+    var(--gradient-rim-color) border-box;
   box-shadow: 0 16px 45px rgb(30 39 70 / .07);
 }
 

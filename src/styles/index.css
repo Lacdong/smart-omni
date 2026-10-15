@@ -31,6 +31,27 @@ button { cursor: pointer; }
 a { color: inherit; }
 ::selection { background: #dbdcff; }
 :focus-visible { outline: 3px solid #6a6cf6; outline-offset: 4px; }
+
+/* Shared motion for gradient rims; animate the paint, keeping content still. */
+@property --gradient-rim-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 105deg;
+}
+@property --gradient-glint-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+:where([data-gradient-rim]) {
+  --gradient-rim-colors: #c581fa, #8e9bf9, #72d8f1, #aee2af, #f9dc88, #f4a49a, #e894d5, #c581fa;
+  --gradient-rim-color: conic-gradient(from var(--gradient-rim-angle), var(--gradient-rim-colors));
+  --gradient-rim-shine: conic-gradient(from var(--gradient-glint-angle), transparent 0deg 24deg, rgb(255 255 255 / .25) 30deg, #fff 34deg, transparent 42deg 198deg, rgb(255 255 255 / .95) 204deg, transparent 212deg 360deg);
+  animation: gradient-rim-orbit 8s linear infinite, gradient-rim-glint 5s linear infinite;
+}
+@keyframes gradient-rim-orbit { to { --gradient-rim-angle: 465deg; } }
+@keyframes gradient-rim-glint { to { --gradient-glint-angle: -360deg; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  [data-gradient-rim] { animation: none; }
 }

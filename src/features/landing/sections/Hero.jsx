@@ -2,11 +2,26 @@ import { useEffect, useRef } from 'react'
 import { Check, Link2, PackageSearch } from 'lucide-react'
 import { AuthActions } from '../components/TrialButton'
 import { DashboardPreview } from '../components/DashboardPreview'
-import { HeroRibbon } from '../components/HeroRibbon'
+import { HeroConnection } from '../components/HeroConnection'
 import styles from './Hero.module.css'
 
 export function Hero() {
   const stageRef = useRef(null)
+  const introRef = useRef(null)
+
+  useEffect(() => {
+    const intro = introRef.current
+    const lead = intro.querySelector('[data-hero-lead]')
+    const alignHands = () => {
+      const title = lead.getBoundingClientRect()
+      intro.style.setProperty('--hero-hand-y', `${title.top - intro.getBoundingClientRect().top + title.height / 2}px`)
+    }
+    const observer = new ResizeObserver(alignHands)
+    observer.observe(intro)
+    observer.observe(lead)
+    alignHands()
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const stage = stageRef.current
@@ -32,13 +47,15 @@ export function Hero() {
 
   return <section className={styles.hero} id="product" aria-labelledby="hero-title">
     <span className={styles.sentinel} data-page-top aria-hidden="true" />
-    <HeroRibbon />
-    <div className={styles.copy}>
-      <p className={styles.eyebrow}><span /> MULTI-CHANNEL, MADE CLEAR</p>
-      <h1 id="hero-title">One workspace for<br className={styles.desktopBreak} /> every sales channel.</h1>
-      <p className={styles.subtitle}>Connect Shopee and TikTok Shop, sync your products, manage orders and inventory, and run your store from one unified workspace.</p>
-      <AuthActions />
-      <p className={styles.context}>Built for merchants selling on <strong>Shopee</strong> and <strong>TikTok Shop</strong>.</p>
+    <div className={styles.intro} ref={introRef}>
+      <HeroConnection />
+      <div className={styles.copy}>
+        <p className={styles.eyebrow}><span /> MULTI-CHANNEL, MADE CLEAR</p>
+        <h1 id="hero-title"><span data-hero-lead>One workspace</span><br /> for every sales channel.</h1>
+        <p className={styles.subtitle}>Connect Shopee and TikTok Shop, sync your products, manage orders and inventory, and run your store from one unified workspace.</p>
+        <AuthActions />
+        <p className={styles.context}>Built for merchants selling on <strong>Shopee</strong> and <strong>TikTok Shop</strong>.</p>
+      </div>
     </div>
     <div className={styles.stage} ref={stageRef} aria-label="Illustrative SmartOmni dashboard with products and marketplace listings">
       <div className={styles.stageInner}>

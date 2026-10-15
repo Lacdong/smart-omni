@@ -59,7 +59,6 @@ export function Header() {
       frame = 0
       const travel = window.scrollY
       surface.style.setProperty('--scroll-glint-x', `${50 + Math.sin(travel / 180) * 35}%`)
-      surface.style.setProperty('--scroll-rim-position', `${(travel * .18) % 100}%`)
     }
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(updateOptics)
@@ -83,7 +82,7 @@ export function Header() {
     </svg>
     <div className={styles.bar}>
       <Brand />
-      <nav className={styles.glassNav} ref={navRef} aria-label="Main navigation">
+      <nav className={styles.glassNav} ref={navRef} data-gradient-rim="" aria-label="Main navigation">
         {navigation.map(({ label, href }) => <a key={href} href={href}>{label}</a>)}
       </nav>
       <div className={styles.auth}><Link to="/auth/login" className={styles.signIn}>Sign in</Link><TrialButton compact /></div>

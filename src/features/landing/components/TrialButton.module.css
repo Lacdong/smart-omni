@@ -1,4 +1,4 @@
-.button { --glow: .18; position: relative; isolation: isolate; display: inline-flex; flex: none; padding: 1.5px; border-radius: 15px; background: linear-gradient(105deg,#c581fa,#8e9bf9,#72d8f1,#aee2af,#f9dc88,#f4a49a,#e894d5); color: #fff; text-decoration: none; transition: transform .25s ease, box-shadow .25s ease; box-shadow: 0 0 22px rgb(126 108 228 / var(--glow)); }
+.button { --glow: .18; position: relative; isolation: isolate; display: inline-flex; flex: none; padding: 1.5px; border-radius: 15px; background: var(--gradient-rim-shine), var(--gradient-rim-color); color: #fff; text-decoration: none; transition: transform .25s ease, box-shadow .25s ease; box-shadow: 0 0 22px rgb(126 108 228 / var(--glow)); }
 .button:hover { box-shadow: 0 4px 28px rgb(126 108 228 / .27); }
 .button:active { transform: translateY(0); }
 .button::before { content: ''; position: absolute; z-index: -1; inset: 4px; filter: blur(14px); opacity: .38; border-radius: inherit; background: inherit; }

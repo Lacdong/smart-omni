@@ -4,7 +4,7 @@ import { cn } from '@/shared/lib/utils'
 import styles from './TrialButton.module.css'
 
 export function TrialButton({ compact = false, className, onClick }) {
-  return <Link to="/auth/register" onClick={onClick} className={cn(styles.button, compact && styles.compact, className)}>
+  return <Link to="/auth/register" onClick={onClick} data-gradient-rim="" className={cn(styles.button, compact && styles.compact, className)}>
     <span className={styles.inner}>Try Free Trial<ArrowUpRight size={16} aria-hidden="true" /></span>
   </Link>
 }
