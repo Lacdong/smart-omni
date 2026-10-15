@@ -1,6 +1,7 @@
 import { CheckCircle2, Circle } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button } from '@/shared/ui/button'
+import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
 import { OwnerStep } from '../components/OwnerStep'
 import { useOwnerOnboarding } from '../hooks/useOwnerOnboarding'
 import { marketplaces } from '../data/onboardingContent'
@@ -18,7 +19,7 @@ export function ConfigureChannels() {
         const shop = state.connections.find(connection => connection.marketplace === marketplace.key)
         const confirmed = shop?.status === 'CONFIRMED'
         return <section className={stepStyles.card} key={marketplace.key} aria-labelledby={`channel-${marketplace.key}`}>
-          <div className={styles.channelHeader}><span className={`${styles.mark} ${styles[marketplace.key]}`} aria-hidden="true">{marketplace.mark}</span><div><h2 id={`channel-${marketplace.key}`}>{marketplace.name}</h2><p>Marketplace connection preview</p></div></div>
+          <div className={styles.channelHeader}><MarketplaceLogo marketplace={marketplace.key} size={48} decorative /><div><h2 id={`channel-${marketplace.key}`}>{marketplace.name}</h2><p>Marketplace connection preview</p></div></div>
           <p className={styles.description}>{marketplace.description}</p>
           <div className={`${styles.status} ${confirmed ? styles.confirmed : ''}`} role="status" aria-live="polite">
             {confirmed ? <CheckCircle2 size={16} aria-hidden="true" /> : <Circle size={16} aria-hidden="true" />}

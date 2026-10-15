@@ -1,0 +1,3 @@
+.image { display: block; width: 100%; height: 100%; object-fit: cover; }
+.mouse { transform: scale(1.2); }
+.keyboard { object-position: center 60%; }

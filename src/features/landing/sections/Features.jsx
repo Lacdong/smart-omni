@@ -11,7 +11,7 @@ const features = [
 export function Features() {
   return <section className={styles.section} id="features" aria-labelledby="features-title">
     <div className={styles.inner}>
-      <SectionHeading id="features-title" eyebrow="CORE CAPABILITIES" title="The essentials, in one place." description="A focused workspace for the products, people and operations behind your sales channels." />
+      <SectionHeading className={styles.heading} id="features-title" eyebrow="CORE CAPABILITIES" title="The essentials, in one place." description="A focused workspace for the products, people and operations behind your sales channels." />
       <div className={styles.list}>
         {features.map(({ title, copy, image }, index) => <article className={styles.feature} key={title}>
           <div className={styles.content}>

@@ -1,4 +1,4 @@
-import { ArrowRight, Boxes, ClipboardList, Layers3 } from 'lucide-react'
+import { Boxes, ClipboardList, Layers3 } from 'lucide-react'
 import { SectionHeading } from '../components/SectionHeading'
 import styles from './ProblemSolution.module.css'
 
@@ -16,7 +16,6 @@ export function ProblemSolution() {
         {pairs.map(({ icon: Icon, problem, solution }) => <article className={styles.card} key={problem}>
           <span className={styles.icon}><Icon size={23} strokeWidth={1.55} aria-hidden="true" /></span>
           <p className={styles.problem}>{problem}</p>
-          <ArrowRight className={styles.arrow} size={18} aria-hidden="true" />
           <p className={styles.solution}>{solution}</p>
         </article>)}
       </div>

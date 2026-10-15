@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Check, Link2, PackageSearch } from 'lucide-react'
 import { AuthActions } from '../components/TrialButton'
 import { DashboardPreview } from '../components/DashboardPreview'
+import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
 import { HeroConnection } from '../components/HeroConnection'
 import styles from './Hero.module.css'
 
@@ -63,7 +64,7 @@ export function Hero() {
         <DashboardPreview className={styles.dashboard} />
         <div className={styles.listingCard} aria-hidden="true">
           <span className={styles.miniIcon}><Link2 size={16} /></span>
-          <span><small>CHANNEL LISTINGS</small><strong>One SKU, two shops</strong><em><span>S</span> Shopee <b>+</b> <span>♪</span> TikTok Shop</em></span>
+          <span><small>CHANNEL LISTINGS</small><strong>One SKU, two shops</strong><em><MarketplaceLogo marketplace="shopee" size={16} decorative /> Shopee <b>+</b> <MarketplaceLogo marketplace="tiktok" size={16} decorative /> TikTok Shop</em></span>
         </div>
         <div className={styles.mappingCard} aria-hidden="true">
           <span className={styles.miniIcon}><PackageSearch size={16} /></span>

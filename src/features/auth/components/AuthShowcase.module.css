@@ -14,11 +14,11 @@
 .workspaceHeading svg { color: #626273; flex: none; }
 .description { margin: 4px 0 16px; font-size: 11px; line-height: 1.5; color: #626273; }
 .channels { display: flex; gap: 8px; margin-bottom: 12px; }
-.channels span { padding: 4px 8px; border: 1px solid var(--color-border); background: var(--color-background); border-radius: 6px; font-size: 9px; color: #555561; }
+.channels > span { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border: 1px solid var(--color-border); background: var(--color-background); border-radius: 6px; font-size: 9px; color: #555561; }
 .products { border-top: 1px solid var(--color-border); }
 .product { display: flex; align-items: center; gap: 12px; padding-block: 12px; border-bottom: 1px solid var(--color-border); }
 .product > div { min-width: 0; }
-.productIcon { display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 8px; background: var(--color-muted); color: #626273; }
+.productIcon { overflow: hidden; display: grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 8px; background: var(--color-muted); color: #626273; }
 .product strong { display: block; font-size: 11px; line-height: 1.5; font-weight: 600; }
 .product small { display: block; margin-top: 4px; font-size: 9px; color: #626273; }
 .listings { margin-left: auto; font-size: 9px; color: #626273; white-space: nowrap; }

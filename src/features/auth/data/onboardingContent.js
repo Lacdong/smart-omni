@@ -8,8 +8,8 @@ export const ownerSteps = [
 ]
 
 export const marketplaces = [
-  { key: 'shopee', name: 'Shopee', mark: 'S', description: 'Preview bringing your Shopee shop into your workspace.' },
-  { key: 'tiktok', name: 'TikTok Shop', mark: '♪', description: 'Preview bringing your TikTok Shop catalog together.' },
+  { key: 'shopee', name: 'Shopee', description: 'Preview bringing your Shopee shop into your workspace.' },
+  { key: 'tiktok', name: 'TikTok Shop', description: 'Preview bringing your TikTok Shop catalog together.' },
 ]
 
 export const importStates = {

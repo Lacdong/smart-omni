@@ -1,5 +1,7 @@
 import { Boxes, Package, ShoppingBag, Layers3 } from 'lucide-react'
 import { BrandWordmark } from '@/shared/components/Brand'
+import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
+import { ProductImage } from '@/shared/components/ProductImage'
 import { showcaseData } from '../data/showcaseData'
 import styles from './AuthShowcase.module.css'
 
@@ -16,10 +18,10 @@ export function AuthShowcase() {
           <p className={styles.workspaceLabel}>Sample workspace</p>
           <div className={styles.workspaceHeading}><h3>Your catalog, together.</h3><Package size={20} aria-hidden="true" /></div>
           <p className={styles.description}>One view. Across your sales channels.</p>
-          <div className={styles.channels}><span>Shopee</span><span>TikTok Shop</span></div>
+          <div className={styles.channels}><span><MarketplaceLogo marketplace="shopee" size={16} decorative />Shopee</span><span><MarketplaceLogo marketplace="tiktok" size={16} decorative />TikTok Shop</span></div>
           <div className={styles.products}>
             {products.map(product => <div className={styles.product} key={product.sku}>
-              <span className={styles.productIcon}><Package size={19} aria-hidden="true" /></span>
+              <span className={styles.productIcon}><ProductImage type={product.type} /></span>
               <div><strong>{product.name}</strong><small>{product.sku} · {product.variant}</small></div>
               <span className={styles.listings}>{product.channels.length} listings</span>
             </div>)}

@@ -60,7 +60,7 @@
   pointer-events: none;
 }
 
-.viewport { overflow: hidden; border-radius: 19px; }
+.viewport { overflow: hidden; border-radius: 0; }
 .track {
   display: flex;
   transition: transform .6s cubic-bezier(.22, 1, .36, 1);

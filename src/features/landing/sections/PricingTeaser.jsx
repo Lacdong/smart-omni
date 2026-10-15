@@ -29,11 +29,11 @@ const plans = [
 export function PricingTeaser() {
   return <section className={styles.section} id="pricing" aria-labelledby="pricing-title">
     <div className={styles.inner}>
-      <SectionHeading id="pricing-title" eyebrow="PLANS" title="Start with the plan for your store." description="Choose a plan as you set up your workspace." />
+      <SectionHeading className={styles.heading} id="pricing-title" eyebrow="PLANS" title="Start with the plan for your store." description="Choose a plan as you set up your workspace." />
       <div className={styles.grid}>
         {plans.map(({ name, audience, features, featured }) => <article key={name} data-gradient-rim={featured ? '' : undefined} className={`${styles.card} ${featured ? styles.premiumCard : ''}`}>
           <div className={styles.cardTop}>
-            <span className={styles.plan}>{name.toUpperCase()}</span>
+            <div className={styles.planLabel}><span className={styles.plan}>{name.toUpperCase()}</span>{featured && <span className={styles.bestChoice}>Best choice</span>}</div>
             <span className={styles.planNumber}>0{featured ? 2 : 1}</span>
           </div>
           <h3>{name}</h3>

@@ -1,21 +1,23 @@
 .section {
-  padding: 120px 24px;
+  padding: 80px 24px;
   background: #fafafa;
 }
 
 .inner { max-width: 950px; margin: auto; }
+.heading > p:first-child { margin-bottom: 12px; }
+.heading > p:last-child { margin-top: 12px; }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: 55px;
+  gap: 16px;
+  margin-top: 32px;
 }
 
 .card {
   min-width: 0;
-  min-height: 350px;
-  padding: 30px;
+  min-height: 300px;
+  padding: 24px;
   border: 2px solid #e7e7e7;
   border-radius: 20px;
   background: #fff;
@@ -23,20 +25,48 @@
 
 .premiumCard {
   --gradient-rim-colors: #f05a75, #f8a855, #f2d95b, #59c883, #55cce1, #668df3, #ab71e8, #f05a75;
+  position: relative;
+  isolation: isolate;
   border-color: transparent;
   background:
-    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(#171717, #171717) padding-box,
     var(--gradient-rim-shine) border-box,
     var(--gradient-rim-color) border-box;
   box-shadow: 0 16px 45px rgb(30 39 70 / .07);
 }
 
+.premiumCard::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 12px 5px -12px;
+  border-radius: inherit;
+  background: var(--gradient-rim-color);
+  filter: blur(24px);
+  opacity: .3;
+  pointer-events: none;
+}
+
+/* Keep the card face opaque while the blurred layer extends outside it. */
+.premiumCard::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -2px;
+  border: inherit;
+  border-radius: inherit;
+  background: inherit;
+  pointer-events: none;
+}
+
 .cardTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.planLabel { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.bestChoice { display: inline-flex; align-items: center; padding: 5px 9px; border-radius: 999px; background: #2563eb; color: #fff; font-size: 10px; font-weight: 650; line-height: 1.2; white-space: nowrap; }
 .plan { color: #666; font-size: 10px; font-weight: 750; letter-spacing: .15em; }
 .planNumber { color: #626262; font-size: 11px; font-weight: 680; letter-spacing: .08em; }
 
 .card h3 {
-  margin: 24px 0 6px;
+  margin: 18px 0 6px;
   color: #171717;
   font-size: 32px;
   line-height: 1.05;
@@ -45,17 +75,21 @@
 }
 
 .audience { margin: 0; color: #6d6d6d; font-size: 14px; line-height: 1.5; }
-.divider { height: 1px; margin: 27px 0 22px; background: #eaeaea; }
-.featureList { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.divider { height: 1px; margin: 18px 0 16px; background: #eaeaea; }
+.featureList { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .featureList li { display: flex; align-items: flex-start; gap: 12px; color: #303030; font-size: 14px; line-height: 1.45; }
 .featureList svg { flex: none; margin-top: 2px; color: #222; stroke-width: 2; }
 .featureList .unavailable { color: #686868; }
 .featureList .unavailable svg { color: #686868; }
 
+.premiumCard h3, .premiumCard .featureList li, .premiumCard .featureList svg { color: #fff; }
+.premiumCard .plan, .premiumCard .planNumber, .premiumCard .audience { color: #c7c7c7; }
+.premiumCard .divider { background: #3b3b3b; }
+
 @media (max-width: 650px) {
-  .section { padding: 86px 18px; }
-  .grid { grid-template-columns: 1fr; max-width: 500px; margin: 35px auto 0; }
-  .card { min-height: 0; padding: 25px; }
-  .card h3 { margin-top: 21px; }
+  .section { padding: 64px 18px; }
+  .grid { grid-template-columns: 1fr; max-width: 500px; margin: 24px auto 0; }
+  .card { min-height: 0; padding: 20px; }
+  .card h3 { margin-top: 16px; }
 }
 

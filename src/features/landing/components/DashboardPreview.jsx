@@ -1,10 +1,11 @@
-import { Headphones, Keyboard, LayoutDashboard, Mouse, Package, ShoppingBag, Boxes } from 'lucide-react'
+import { LayoutDashboard, Package, Boxes } from 'lucide-react'
 import { BrandWordmark } from '@/shared/components/Brand'
+import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
+import { ProductImage } from '@/shared/components/ProductImage'
 import { cn } from '@/shared/lib/utils'
 import { landingPreviewFixture as landingPreview } from '../data/previewData'
 import styles from './DashboardPreview.module.css'
 
-const icons = { mouse: Mouse, headphones: Headphones, keyboard: Keyboard, tote: ShoppingBag }
 const { inventory, orders, products } = landingPreview
 const menu = [
   { id: 'products', label: 'Products', icon: Package },
@@ -13,14 +14,13 @@ const menu = [
 ]
 
 function ProductThumb({ type }) {
-  const Icon = icons[type] || Package
-  return <span className={cn(styles.thumb, styles[type])}><Icon size={22} strokeWidth={1.45} aria-hidden="true" /></span>
+  return <span className={styles.thumb}><ProductImage type={type} /></span>
 }
 
 function Channel({ channel, short = false }) {
   const isShopee = channel === 'shopee'
-  return <span className={cn(styles.channel, isShopee ? styles.shopee : styles.tiktok)}>
-    <span className={styles.channelMark} aria-hidden="true">{isShopee ? 'S' : '♪'}</span>
+  return <span className={styles.channel}>
+    <MarketplaceLogo marketplace={channel} size={19} decorative={!short} />
     {!short && <span>{isShopee ? 'Shopee' : 'TikTok Shop'}</span>}
   </span>
 }
