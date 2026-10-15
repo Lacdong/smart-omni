@@ -60,15 +60,22 @@ for (const mode of modes) {
       const email = await page.getByLabel('Email address').boundingBox()
       expect(email.x).toBeGreaterThanOrEqual(0)
       expect(email.x + email.width).toBeLessThanOrEqual(width)
-      expect(email.height).toBeGreaterThanOrEqual(44)
+      // Desktop uses the compact 85% scale; mobile keeps full-size controls.
+      expect(email.height).toBeGreaterThanOrEqual(width <= 760 ? 44 : 40)
+      const infoCard = page.getByRole('complementary')
+      await expect(infoCard).toBeVisible()
+      const infoBox = await infoCard.boundingBox()
+      const formBox = await page.getByRole('region', { name: 'Account access' }).boundingBox()
+      // The requested black and white cards overlap at every supported size.
+      expect(Math.min(infoBox.x + infoBox.width, formBox.x + formBox.width) - Math.max(infoBox.x, formBox.x)).toBeGreaterThan(0)
+      expect(Math.min(infoBox.y + infoBox.height, formBox.y + formBox.height) - Math.max(infoBox.y, formBox.y)).toBeGreaterThan(0)
       if (width <= 760) {
-        await expect(page.getByRole('complementary')).toBeHidden()
+        expect(infoBox.y).toBeLessThan(formBox.y)
         expect(await page.getByLabel('Email address').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16)
       } else {
-        await expect(page.getByRole('complementary')).toBeVisible()
-        const sampleLabel = await page.getByText('Illustrative sample data', { exact: true }).boundingBox()
-        const showcaseCopy = await page.getByText('LESS SWITCHING. MORE CLARITY.', { exact: true }).boundingBox()
-        expect(sampleLabel.y + sampleLabel.height).toBeLessThan(showcaseCopy.y)
+        expect(infoBox.x).toBeLessThan(formBox.x)
+        expect(Math.abs(formBox.x - (infoBox.x + infoBox.width / 2))).toBeLessThan(1)
+        expect(infoBox.x + infoBox.width).toBeLessThan(email.x)
       }
       await page.getByRole('button', { name: mode.action, exact: true }).click()
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)

@@ -1,12 +1,11 @@
 import { useId, useState } from 'react'
 import { Info } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { Button } from '@/shared/ui/button'
 import { PasswordField } from './PasswordField'
 import { validateField } from '../lib/validation'
 import styles from './AuthForm.module.css'
 
-export function AuthForm() {
+export function AuthForm({ secondaryAction }) {
   const id = useId()
   const [values, setValues] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
@@ -58,13 +57,10 @@ export function AuthForm() {
       </div>
       <PasswordField id={`${id}-password`} value={values.password} onChange={change} onBlur={blur}
         error={errors.password} autoComplete="current-password" />
-      <Button type="submit" className={styles.submit}>Sign in</Button>
+      <div className={styles.actions}>{secondaryAction}<Button type="submit" className={styles.submit}>Sign in</Button></div>
       <div className={styles.notice} role="status" aria-live="polite" aria-atomic="true">
         {notice && <div className={styles.noticeContent}><Info size={18} aria-hidden="true" /><p>{notice}</p></div>}
       </div>
     </form>
-    <p className={styles.switch}>New to SmartOmni?{' '}
-      <Link to="/auth/register">Create account</Link>
-    </p>
   </div>
 }
