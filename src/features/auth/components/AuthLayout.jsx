@@ -10,12 +10,12 @@ const benefits = [
   { icon: Boxes, title: 'Stock with more clarity.', copy: 'See inventory alongside channel sync status.' },
 ]
 
-export function AuthLayout({ children, footer, footerStart, showBackLink = true }) {
+export function AuthLayout({ children, footer, footerStart, formCardClassName = '', showBackLink = true, showInfoCard = true, compact = false, alignBackBelowInfo = false }) {
   const titleId = useId()
-  return <main id="main-content" className={styles.page} tabIndex={-1}>
+  return <main id="main-content" className={`${styles.page} ${compact ? styles.compact : ''}`} tabIndex={-1}>
     <header className={styles.header}><Brand /></header>
-    <div className={styles.stack}>
-      <aside className={styles.infoCard} aria-labelledby={titleId}>
+    <div className={`${styles.stack} ${showInfoCard ? '' : styles.standalone} ${alignBackBelowInfo ? styles.balancedFooter : ''}`}>
+      {showInfoCard && <aside className={styles.infoCard} aria-labelledby={titleId}>
         <p className={styles.eyebrow}>LESS SWITCHING. MORE CLARITY.</p>
         <h2 id={titleId}>All your shops.<br />One workspace.</h2>
         <p className={styles.description}>Bring your products, orders and inventory into a clearer view.</p>
@@ -25,8 +25,8 @@ export function AuthLayout({ children, footer, footerStart, showBackLink = true 
             <div><strong>{title}</strong><p>{copy}</p></div>
           </li>)}
         </ul>
-      </aside>
-      <section className={styles.formCard} aria-label="Account access">
+      </aside>}
+      <section className={`${styles.formCard} ${formCardClassName}`} aria-label="Account access">
         <div className={styles.formBody}>
           {children}
           {showBackLink && <Link to="/" className={styles.back}><ArrowLeft size={15} aria-hidden="true" />Back to SmartOmni</Link>}
@@ -36,6 +36,7 @@ export function AuthLayout({ children, footer, footerStart, showBackLink = true 
           <p className={styles.register}>{footer}</p>
         </div> : <p className={styles.register}>{footer}</p>)}
       </section>
+      {alignBackBelowInfo && footerStart && <div className={styles.lowerBack}>{footerStart}</div>}
     </div>
   </main>
 }

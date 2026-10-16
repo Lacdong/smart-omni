@@ -2,10 +2,11 @@ import { useId, useState } from 'react'
 import { Info } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
 import { PasswordField } from './PasswordField'
+import { GoogleContinue } from './GoogleContinue'
 import { validateField } from '../lib/validation'
 import styles from './AuthForm.module.css'
 
-export function AuthForm({ secondaryAction }) {
+export function AuthForm() {
   const id = useId()
   const [values, setValues] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
@@ -46,7 +47,7 @@ export function AuthForm({ secondaryAction }) {
       <h1>Welcome back.</h1>
       <p className={styles.subtitle}>Sign in to your SmartOmni workspace.</p>
     </div>
-    <form noValidate onSubmit={submit} aria-label="Sign in">
+    <form className={styles.loginForm} noValidate onSubmit={submit} aria-label="Sign in">
       <div className={styles.field}>
         <label htmlFor={`${id}-email`}>Email address</label>
         <input id={`${id}-email`} name="email" type="email" required autoComplete="email"
@@ -57,7 +58,11 @@ export function AuthForm({ secondaryAction }) {
       </div>
       <PasswordField id={`${id}-password`} value={values.password} onChange={change} onBlur={blur}
         error={errors.password} autoComplete="current-password" />
-      <div className={styles.actions}>{secondaryAction}<Button type="submit" className={styles.submit}>Sign in</Button></div>
+      <div className={styles.actions}>
+        <Button type="button" variant="link" size="sm" className={styles.forgot} onClick={() => setNotice('Password recovery is not connected yet. No reset email has been sent.')}>Forgot password?</Button>
+        <Button type="submit" className={styles.submit}>Sign in</Button>
+      </div>
+      <GoogleContinue onContinue={() => setNotice('Google sign-in is not connected yet. You have not been signed in.')} />
       <div className={styles.notice} role="status" aria-live="polite" aria-atomic="true">
         {notice && <div className={styles.noticeContent}><Info size={18} aria-hidden="true" /><p>{notice}</p></div>}
       </div>

@@ -31,6 +31,25 @@ async function checkWidth(page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true)
 }
 
+test('Staff registration fits with its logo and all actions visible without scrolling', async ({ page }) => {
+  for (const [width, height] of [[1440, 900], [1366, 768], [1024, 768], [699, 599], [375, 812]]) {
+    await page.setViewportSize({ width, height })
+    await page.goto('/auth/register/staff')
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const dimensions = await page.evaluate(() => ({ height: document.documentElement.scrollHeight, width: document.documentElement.scrollWidth }))
+    expect(dimensions.height, `${width} × ${height}: vertical overflow`).toBeLessThanOrEqual(height)
+    expect(dimensions.width).toBeLessThanOrEqual(width)
+    for (const name of ['SmartOmni home', 'Back to Account Type', 'Sign in']) {
+      await expect(page.getByRole('link', { name, exact: true })).toBeInViewport()
+    }
+    await expect(page.getByRole('button', { name: 'Create account', exact: true })).toBeInViewport()
+    await expect(page.getByRole('button', { name: 'Continue with Google', exact: true })).toBeInViewport()
+    await page.screenshot({ path: `artifacts/staff-fit/${width}-${height}.png`, fullPage: true, animations: 'disabled' })
+  }
+  await page.getByRole('link', { name: 'Back to Account Type', exact: true }).click()
+  await expect(page).toHaveURL('/auth/register')
+})
+
 test('registration starts with keyboard-accessible role selection', async ({ page }) => {
   await page.goto('/auth/register')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('How will you use SmartOmni?')

@@ -14,8 +14,14 @@
 .error { margin: 0; min-height: 16px; font-size: 12px; line-height: 1.4; color: var(--color-destructive); text-wrap: pretty; }
 .hint { margin: 0; font-size: 12px; line-height: 1.6; color: var(--color-muted-foreground); text-wrap: pretty; }
 .submit { width: 100%; height: 48px; border-radius: 12px; font-size: 14px; font-weight: 550; margin-top: 4px; }
+.loginForm .field { gap: 6px; margin-bottom: 8px; }
+.loginForm .field:has(input[autocomplete='current-password']) { margin-bottom: 0; }
+.loginForm .error:empty { display: none; }
+.forgot { height: 44px; min-height: 44px; padding: 0; color: var(--color-muted-foreground); font-size: 12px; font-weight: 500; }
+.forgot:hover { color: var(--color-foreground); }
 .actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 4px; }
 .actions .submit { flex: none; margin-top: 0; margin-left: auto; }
+.loginForm .actions { margin-top: 16px; }
 .submit:hover { box-shadow: 0 4px 12px rgb(0 0 0 / .1); }
 .submit:focus-visible { outline: 2px solid var(--color-foreground); outline-offset: 4px; }
 .noticeContent { display: flex; gap: 12px; margin-top: 20px; padding: 16px; background: var(--color-muted); border: 1px solid var(--color-border); border-radius: 12px; }

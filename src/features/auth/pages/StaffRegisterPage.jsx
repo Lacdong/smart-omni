@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/shared/ui/button'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormField } from '../components/FormField'
+import { GoogleContinue } from '../components/GoogleContinue'
 import { PasswordField } from '../components/PasswordField'
 import { useValidatedForm } from '../hooks/useValidatedForm'
 import styles from '../components/AuthForm.module.css'
@@ -12,6 +13,7 @@ import pageStyles from './StaffRegisterPage.module.css'
 export function StaffRegisterPage() {
   const id = useId()
   const [preview, setPreview] = useState(false)
+  const [googleNotice, setGoogleNotice] = useState('')
   const heading = useRef(null)
   const form = useValidatedForm({ fullName: '', email: '', password: '', confirmPassword: '' })
   useEffect(() => { if (preview) heading.current?.focus() }, [preview])
@@ -20,7 +22,8 @@ export function StaffRegisterPage() {
     form.clearCredentials()
     setPreview(true)
   }
-  return <AuthLayout><div className={styles.container}>
+  return <AuthLayout compact showInfoCard={false} showBackLink={false}
+    footer={<>Already have an account? <Link to="/auth/login">Sign in</Link></>}><div className={`${styles.container} ${pageStyles.container}`}>
     {preview ? <>
       <div className={pageStyles.previewIcon}><Mail size={28} aria-hidden="true" /></div>
       <div className={styles.intro}><p className={styles.eyebrow}>PENDING INVITATION</p>
@@ -34,7 +37,7 @@ export function StaffRegisterPage() {
       </ol>
       <Button variant="outline" className={styles.submit} onClick={() => setPreview(false)}>Back to registration</Button>
     </> : <>
-      <div className={styles.intro}><p className={styles.eyebrow}>TENANT STAFF</p><h1>Create your team account.</h1>
+      <div className={`${styles.intro} ${pageStyles.intro}`}><p className={styles.eyebrow}>TENANT STAFF</p><h1>Create your team account.</h1>
         <p className={styles.subtitle}>Get ready to collaborate in your SmartOmni workspace.</p>
       </div>
       <form noValidate onSubmit={submit} aria-label="Staff registration">
@@ -42,10 +45,15 @@ export function StaffRegisterPage() {
         <FormField name="email" label="Email address" type="email" autoComplete="email" placeholder="you@example.com" value={form.values.email} error={form.errors.email} onChange={form.change} onBlur={form.blur} />
         <PasswordField id={`${id}-password`} value={form.values.password} error={form.errors.password} onChange={form.change} onBlur={form.blur} />
         <PasswordField id={`${id}-confirm`} name="confirmPassword" label="Confirm password" value={form.values.confirmPassword} error={form.errors.confirmPassword} onChange={form.change} onBlur={form.blur} />
-        <Button className={styles.submit} type="submit">Create account</Button>
+        <div className={pageStyles.actions}>
+          <Link className={pageStyles.back} to="/auth/register"><ArrowLeft size={16} aria-hidden="true" />Back to Account Type</Link>
+          <Button className={styles.submit} type="submit">Create account</Button>
+        </div>
       </form>
+      <div>
+        <GoogleContinue onContinue={() => setGoogleNotice('Google sign-in is not connected yet. No account has been created.')} />
+        <div role="status" aria-live="polite" className={pageStyles.googleNotice}>{googleNotice}</div>
+      </div>
     </>}
-    <p className={styles.switch}>Already have an account? <Link to="/auth/login">Sign in</Link></p>
-    <Link className={pageStyles.back} to="/auth/register"><ArrowLeft size={16} aria-hidden="true" />Back to Account Type</Link>
   </div></AuthLayout>
 }

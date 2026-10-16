@@ -1,8 +1,24 @@
-.back { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 44px; margin-top: 8px; font-size: 13px; text-decoration: none; color: var(--color-muted-foreground); }
+.container .intro { margin-bottom: 16px; }
+.container .intro h1 { font-size: 28px; }
+.intro > p:first-child { margin-bottom: 8px; }
+.intro > p:last-child { margin-top: 8px; font-size: 13px; }
+.container form > div:not(:last-child) { gap: 4px; margin-bottom: 8px; }
+.container form p:empty { display: none; }
+.container input { height: 44px; }
+.container form button[aria-controls] { top: 2px; }
+.back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 12px; text-decoration: none; color: #606060; white-space: nowrap; }
 .back:hover { color: var(--color-foreground); text-decoration: underline; text-underline-offset: 4px; }
+.actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 12px; }
+.actions button[type='submit'] { width: auto; min-width: 128px; height: 44px; margin-top: 0; }
+.googleNotice { color: var(--color-muted-foreground); font-size: 12px; line-height: 1.6; }
+.googleNotice:not(:empty) { margin-top: 12px; }
 .previewIcon { display: grid; place-items: center; width: 64px; height: 64px; margin-bottom: 24px; background: var(--color-muted); border-radius: 16px; }
 .nextSteps { display: grid; gap: 24px; padding: 0; margin: 32px 0; list-style: none; }
 .nextSteps li { display: flex; gap: 12px; }
 .nextSteps li > span { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--color-border); font-size: 12px; }
 .nextSteps strong { font-size: 13px; font-weight: 600; }
 .nextSteps p { margin: 4px 0 0; color: var(--color-muted-foreground); font-size: 12px; line-height: 1.6; text-wrap: pretty; }
+@media (max-width: 360px) {
+  .back { gap: 4px; font-size: 11px; }
+  .actions button[type='submit'] { min-width: 116px; padding-inline: 12px; font-size: 13px; }
+}

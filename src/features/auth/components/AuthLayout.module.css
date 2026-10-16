@@ -16,11 +16,29 @@
 .formBody { grid-column: 2; min-width: 0; width: 100%; max-width: 420px; justify-self: center; }
 .register { grid-column: 2; margin: 0; color: #666; font-size: 13px; line-height: 1.6; text-align: center; }
 .footerRow { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; column-gap: inherit; }
+.lowerBack { display: none; }
+@media (min-width: 761px) {
+  .stack.balancedFooter { grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .balancedFooter .infoCard { grid-row: 2; }
+  .balancedFooter .formCard { grid-row: 1 / 4; }
+  .balancedFooter .footerRow > a { display: none; }
+  .balancedFooter .footerRow { padding-bottom: 12px; }
+  .balancedFooter .lowerBack { display: flex; align-items: center; align-self: stretch; grid-column: 2 / 4; grid-row: 3; padding-left: 44px; z-index: 3; pointer-events: none; }
+  .lowerBack a { pointer-events: auto; }
+}
+@media (min-width: 761px) and (max-width: 1050px) {
+  .balancedFooter .lowerBack { padding-left: 32px; }
+}
 .register a { display: inline-flex; align-items: center; min-height: 44px; color: #171717; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
 .formCard input { border-radius: 4px; background: #f7f7f7; }
 .formCard input::placeholder { color: #666; }
 .formBody h1 { font-size: 36px; }
 .formCard button[type='submit'] { width: 150px; border-radius: 999px; }
+.stack.standalone { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; max-width: 560px; zoom: 1; }
+.standalone .formCard { grid-column: 1; grid-row: 1; grid-template-columns: minmax(0, 1fr); min-height: 0; padding: 32px 40px; gap: 24px; }
+.standalone .formBody, .standalone .register { grid-column: 1; }
+.standalone .footerRow { width: 100%; max-width: 420px; justify-self: center; grid-template-columns: auto minmax(0, 1fr); gap: 16px; }
+.standalone .footerRow .register { grid-column: 2; text-align: right; font-size: 12px; }
 @media (max-width: 1050px) {
   .page { padding-inline: 24px; }
   .stack { grid-template-columns: 130px 130px minmax(0, 1fr); }
@@ -44,9 +62,29 @@
   .footerRow { grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; }
   .footerRow .register { grid-column: 2; font-size: 11px; text-align: right; }
   .formCard button[type='submit'] { width: auto; min-width: 104px; }
+  .standalone .formCard { padding: 24px; }
+  .standalone .footerRow { gap: 12px; }
+  .standalone .footerRow .register { font-size: 11px; }
 }
 @media (max-width: 360px) {
   .page { padding-inline: 12px; }
   .header { flex-wrap: wrap; gap: 0 12px; }
   .formCard { padding-inline: 20px; }
+  .standalone .formCard { padding-inline: 20px; }
+}
+.page.compact { gap: 12px; padding-block: 16px 20px; }
+.compact .stack.standalone { max-width: 520px; zoom: .85; }
+.compact .standalone .formCard { padding: 24px 32px; gap: 12px; }
+@media (min-width: 600px) and (max-height: 700px) {
+  .compact .stack.standalone { zoom: .75; }
+}
+@media (min-width: 600px) and (max-height: 600px) {
+  .compact .stack.standalone { zoom: .68; }
+}
+@media (max-width: 599px) {
+  .compact .stack.standalone { zoom: 1; }
+  .compact .standalone .formCard { padding: 20px 24px; }
+}
+@media (max-width: 360px) {
+  .compact .standalone .formCard { padding-inline: 20px; }
 }
