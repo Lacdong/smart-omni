@@ -92,12 +92,6 @@
 .glassNav a[aria-current='location']::after { content: ''; position: absolute; left: 13px; right: 13px; bottom: 5px; height: 2px; border-radius: 1px; background: #171717; }
 .mobileNav a[aria-current='location'] { position: relative; }
 .mobileNav a[aria-current='location']::after { content: ''; position: absolute; left: 0; bottom: 8px; width: 28px; height: 2px; background: #171717; }
-.glassNav a.storefrontLink, .mobileNav a.storefrontLink { font-weight: 700; color: #171717; background: transparent; text-shadow: -2px 1px 5px #70c8ff90, 2px 1px 7px #af8af690, 0 2px 9px #f6a6ca70; animation: storefrontGlow 5s ease-in-out infinite; }
-@keyframes storefrontGlow {
-  0%, 100% { text-shadow: -2px 1px 5px #70c8ff90, 2px 1px 7px #af8af690, 0 2px 9px #f6a6ca70; }
-  33% { text-shadow: 2px -1px 5px #af8af6a0, -2px 2px 7px #f6a6ca90, 1px 1px 9px #80dcca80; }
-  66% { text-shadow: 0 2px 5px #f6a6ca90, 2px -1px 7px #80dcca90, -2px 1px 9px #70c8ff90; }
-}
 .header[data-scrolled="true"] .glassNav {
   background: linear-gradient(115deg, rgb(255 255 255 / .045), rgb(238 243 250 / .015) 52%, rgb(255 255 255 / .055));
   box-shadow: 0 8px 22px rgb(31 44 67 / .05), inset 0 1px rgb(255 255 255 / .7), inset 0 -1px rgb(126 145 174 / .1);
@@ -176,7 +170,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glassNav a.storefrontLink, .mobileNav a.storefrontLink { animation: none; }
   .glassNav { transition: none; }
   .glassNav::before { background-position: 0 0; }
   .glassNav::after { background: radial-gradient(ellipse 125px 30px at 50% 0%, rgb(255 255 255 / .07), transparent 88%); }

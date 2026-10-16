@@ -23,7 +23,7 @@ test('landing navigation, CTAs, and dashboard preview work', async ({ page }) =>
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('One workspace for every sales channel.')
   const navigation = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(navigation.getByRole('link')).toHaveCount(6)
+  await expect(navigation.getByRole('link')).toHaveCount(5)
   await expect(navigation.getByRole('link', { name: 'Sign in' })).toHaveCount(0)
   const logoBox = await page.getByRole('link', { name: 'SmartOmni home' }).first().boundingBox()
   const glassBox = await navigation.boundingBox()
@@ -76,13 +76,12 @@ for (const width of [375, 1100, 1280]) {
       const signInBox = await page.locator('header').getByRole('link', { name: 'Sign in', exact: true }).boundingBox()
       expect(navBox.x + navBox.width).toBeLessThan(signInBox.x)
     }
-    await navigation.getByRole('link', { name: 'Storefront', exact: true }).click()
+    await expect(navigation.getByRole('link', { name: 'Storefront', exact: true })).toHaveCount(0)
+    if (width < 1100) await page.keyboard.press('Escape')
+    await heroLink.click()
     await expect(page).toHaveURL(/\/store\/everyday-studio$/)
     await expect(page.getByRole('dialog')).toHaveCount(0)
     await expect(page.getByRole('heading', { level: 1 })).toContainText('LESS, BUT BETTER')
-    await page.goBack()
-    await heroLink.click()
-    await expect(page).toHaveURL(/\/store\/everyday-studio$/)
   })
 }
 

@@ -105,9 +105,7 @@ export function Header() {
     <div className={styles.bar}>
       <Brand />
       <nav className={styles.glassNav} ref={navRef} data-gradient-rim="" aria-label="Main navigation">
-        {navigation.map(({ label, href }) => href.startsWith('/')
-          ? <Link key={href} to={href} className={styles.storefrontLink}>{label}</Link>
-          : <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined}>{label}</a>)}
+        {navigation.map(({ label, href }) => <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined}>{label}</a>)}
       </nav>
       <div className={styles.auth}><Link to="/auth/login" className={styles.signIn}>Sign in</Link><TrialButton compact /></div>
       <Link to="/auth/login" className={styles.mobileTopSignIn}>Sign in</Link>
@@ -117,9 +115,7 @@ export function Header() {
           <DialogTitle><Brand linked={false} /></DialogTitle>
           <DialogDescription className="sr-only">Explore SmartOmni or access your account.</DialogDescription>
           <nav className={styles.mobileNav} aria-label="Mobile navigation">
-            {navigation.map(({ label, href }) => href.startsWith('/')
-              ? <Link key={href} to={href} className={styles.storefrontLink} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></Link>
-              : <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></a>)}
+            {navigation.map(({ label, href }) => <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></a>)}
           </nav>
           <div className={styles.mobileAuth}><TrialButton onClick={() => setOpen(false)} /><Link to="/auth/login" onClick={() => setOpen(false)} className={styles.mobileSignIn}>Sign in</Link></div>
         </DialogContent>

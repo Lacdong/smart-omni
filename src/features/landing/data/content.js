@@ -1,11 +1,10 @@
 // Stable landing copy and navigation; illustrative samples live in previewData.js.
 export const navigation = [
-  { label: 'Storefront', href: '/store/everyday-studio' },
   { label: 'Product', href: '#product' },
   { label: 'Features', href: '#features' },
+  { label: 'How It Works', href: '#how-it-works' },
   { label: 'Integrations', href: '#integrations' },
   { label: 'Pricing', href: '#pricing' },
-  { label: 'How It Works', href: '#how-it-works' },
 ]
 
 export const previewDescriptions = {
