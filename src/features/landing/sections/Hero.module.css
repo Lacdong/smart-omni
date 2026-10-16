@@ -7,6 +7,9 @@
 .copy h1 { margin: 0 auto; font-size: clamp(50px, 4.7vw, 68px); font-weight: 665; line-height: 1.04; letter-spacing: -.07em; }
 .subtitle { max-width: 510px; margin: 27px auto 30px; color: #6b6b6b; font-size: clamp(16px, 1.3vw, 18px); line-height: 1.52; letter-spacing: -.016em; }
 .context { margin: 20px 0 0; color: #666; font-size: 12px; }.context strong { color: #444; font-weight: 625; }
+.shopEntry { display: flex; align-items: center; justify-content: center; gap: 7px; margin: 8px 0 0; color: #666; font-size: 13px; }
+.shopEntry a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; color: #171717; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+.shopEntry a:hover { color: #555; }
 .stage { position: relative; max-width: 1250px; margin: 16px auto 0; padding: 16px 95px 58px; perspective: 1400px; }
 .stageInner { position: relative; transform: rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg)); transform-style: preserve-3d; transition: transform .35s ease-out; }
 .orbit { position: absolute; z-index: -1; left: -7%; right: -7%; top: -8%; bottom: -8%; border-radius: 50%; background: radial-gradient(ellipse at center, rgb(217 223 235 / .25), rgb(255 255 255 / 0) 67%); pointer-events: none; }

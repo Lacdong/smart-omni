@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowUpRight, Check, MousePointer2 } from 'lucide-react'
 import { BrandWordmark } from '@/shared/components/Brand'
 import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
@@ -18,6 +19,7 @@ export function OfferComparison() {
       <div className={styles.copy}>
         <SectionHeading id="offer-title" align="left" eyebrow="STOREFRONT OFFER COMPARISON" title="Help customers choose where to buy." description="Give shoppers a clear comparison of available marketplace offers for the same SKU. They choose the marketplace that fits them." />
         <p className={styles.note}>Same SKU · Current price · Availability · Marketplace choice</p>
+        <Link to="/store/everyday-studio" className={styles.storeLink}>Explore the demo store <ArrowUpRight size={16} aria-hidden="true" /></Link>
       </div>
       <div className={styles.preview} aria-label={`Sample offer comparison for Wireless Mouse ${selectedColor.name}, SKU ${selectedColor.sku}`}>
         <div className={styles.previewHeader}><BrandWordmark /><span>THE EVERYDAY EDIT</span><MousePointer2 size={14} aria-hidden="true" /></div>

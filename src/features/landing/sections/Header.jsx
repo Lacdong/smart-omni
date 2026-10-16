@@ -10,8 +10,30 @@ import styles from './Header.module.css'
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState('#product')
   const headerRef = useRef(null)
   const navRef = useRef(null)
+
+  useEffect(() => {
+    const sections = navigation.filter(item => item.href.startsWith('#')).map(item => ({ href: item.href, element: document.getElementById(item.href.slice(1)) })).filter(item => item.element)
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const threshold = Math.min(window.innerHeight * .3, 160)
+      const current = sections.reduce((selected, section) => {
+        const top = section.element.getBoundingClientRect().top
+        return top <= threshold && top > selected.top ? { href: section.href, top } : selected
+      }, { href: '#product', top: -Infinity })
+      setActiveSection(current.href)
+    }
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update) }
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    const observer = new ResizeObserver(schedule)
+    observer.observe(document.body)
+    schedule()
+    return () => { window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); observer.disconnect(); cancelAnimationFrame(frame) }
+  }, [])
 
   useEffect(() => {
     const sentinel = document.querySelector('[data-page-top]')
@@ -83,7 +105,9 @@ export function Header() {
     <div className={styles.bar}>
       <Brand />
       <nav className={styles.glassNav} ref={navRef} data-gradient-rim="" aria-label="Main navigation">
-        {navigation.map(({ label, href }) => <a key={href} href={href}>{label}</a>)}
+        {navigation.map(({ label, href }) => href.startsWith('/')
+          ? <Link key={href} to={href} className={styles.storefrontLink}>{label}</Link>
+          : <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined}>{label}</a>)}
       </nav>
       <div className={styles.auth}><Link to="/auth/login" className={styles.signIn}>Sign in</Link><TrialButton compact /></div>
       <Link to="/auth/login" className={styles.mobileTopSignIn}>Sign in</Link>
@@ -93,7 +117,9 @@ export function Header() {
           <DialogTitle><Brand linked={false} /></DialogTitle>
           <DialogDescription className="sr-only">Explore SmartOmni or access your account.</DialogDescription>
           <nav className={styles.mobileNav} aria-label="Mobile navigation">
-            {navigation.map(({ label, href }) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></a>)}
+            {navigation.map(({ label, href }) => href.startsWith('/')
+              ? <Link key={href} to={href} className={styles.storefrontLink} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></Link>
+              : <a key={href} href={href} aria-current={activeSection === href ? 'location' : undefined} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={18} aria-hidden="true" /></a>)}
           </nav>
           <div className={styles.mobileAuth}><TrialButton onClick={() => setOpen(false)} /><Link to="/auth/login" onClick={() => setOpen(false)} className={styles.mobileSignIn}>Sign in</Link></div>
         </DialogContent>

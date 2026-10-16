@@ -1,5 +1,21 @@
 import { expect, test } from '@playwright/test'
 
+test('header underline follows the visible landing section', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  const navigation = page.getByRole('navigation', { name: 'Main navigation', exact: true })
+  await expect(navigation.getByRole('link', { name: 'Product', exact: true })).toHaveAttribute('aria-current', 'location')
+  await page.locator('#features').scrollIntoViewIfNeeded()
+  await page.evaluate(() => document.getElementById('features').scrollIntoView({ block: 'start', behavior: 'instant' }))
+  await expect(navigation.getByRole('link', { name: 'Features', exact: true })).toHaveAttribute('aria-current', 'location')
+  await navigation.getByRole('link', { name: 'Pricing', exact: true }).click()
+  await expect(navigation.getByRole('link', { name: 'Pricing', exact: true })).toHaveAttribute('aria-current', 'location')
+  await expect(navigation.locator('[aria-current="location"]')).toHaveCount(1)
+  await page.setViewportSize({ width: 375, height: 812 })
+  await page.getByRole('button', { name: 'Open menu' }).click()
+  await expect(page.getByRole('navigation', { name: 'Mobile navigation', exact: true }).getByRole('link', { name: 'Pricing', exact: true })).toHaveAttribute('aria-current', 'location')
+})
+
 test('landing navigation, CTAs, and dashboard preview work', async ({ page }) => {
   const errors = []
   page.on('pageerror', error => errors.push(error.message))
@@ -7,7 +23,7 @@ test('landing navigation, CTAs, and dashboard preview work', async ({ page }) =>
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('One workspace for every sales channel.')
   const navigation = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(navigation.getByRole('link')).toHaveCount(5)
+  await expect(navigation.getByRole('link')).toHaveCount(6)
   await expect(navigation.getByRole('link', { name: 'Sign in' })).toHaveCount(0)
   const logoBox = await page.getByRole('link', { name: 'SmartOmni home' }).first().boundingBox()
   const glassBox = await navigation.boundingBox()
@@ -37,13 +53,36 @@ test('landing navigation, CTAs, and dashboard preview work', async ({ page }) =>
   expect(errors).toEqual([])
 })
 
-for (const width of [375, 768, 1440]) {
+for (const width of [375, 768, 1100, 1440]) {
   test(`responsive layout has no horizontal overflow at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     const dimensions = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }))
     expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client)
     await expect(page.getByRole('link', { name: /Try Free Trial/ }).first()).toBeVisible()
+  })
+}
+
+for (const width of [375, 1100, 1280]) {
+  test(`visitors can enter the storefront from landing at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 812 })
+    await page.goto('/')
+    const heroLink = page.getByRole('link', { name: 'Explore store', exact: true })
+    await expect(heroLink).toBeInViewport()
+    if (width < 1100) await page.getByRole('button', { name: 'Open menu' }).click()
+    const navigation = page.getByRole('navigation', { name: width < 1100 ? 'Mobile navigation' : 'Main navigation', exact: true })
+    if (width >= 1100) {
+      const navBox = await navigation.boundingBox()
+      const signInBox = await page.locator('header').getByRole('link', { name: 'Sign in', exact: true }).boundingBox()
+      expect(navBox.x + navBox.width).toBeLessThan(signInBox.x)
+    }
+    await navigation.getByRole('link', { name: 'Storefront', exact: true }).click()
+    await expect(page).toHaveURL(/\/store\/everyday-studio$/)
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('LESS, BUT BETTER')
+    await page.goBack()
+    await heroLink.click()
+    await expect(page).toHaveURL(/\/store\/everyday-studio$/)
   })
 }
 

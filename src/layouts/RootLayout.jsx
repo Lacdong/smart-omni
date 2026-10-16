@@ -18,7 +18,7 @@ export function RootLayout() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    document.title = titles[pathname] || 'Page not found — SmartOmni'
+    document.title = titles[pathname] || (pathname.startsWith('/store/') ? 'SmartOmni Storefront — SmartOmni' : 'Page not found — SmartOmni')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
 

@@ -67,4 +67,5 @@
   .offer { padding: 12px; }
   .offer > strong { font-size: 18px; }
 }
+.storeLink { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin-top: 20px; color: #171717; font-size: 13px; font-weight: 550; text-decoration: underline; text-underline-offset: 5px; }
 @media (prefers-reduced-motion: reduce) { .productImage, .offer { transition: none; } }
