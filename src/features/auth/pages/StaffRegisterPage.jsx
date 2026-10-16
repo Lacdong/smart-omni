@@ -5,7 +5,6 @@ import { Button } from '@/shared/ui/button'
 import { AuthLayout } from '../components/AuthLayout'
 import { FormField } from '../components/FormField'
 import { PasswordField } from '../components/PasswordField'
-import { PrototypeNotice } from '../components/PrototypeNotice'
 import { useValidatedForm } from '../hooks/useValidatedForm'
 import styles from '../components/AuthForm.module.css'
 import pageStyles from './StaffRegisterPage.module.css'
@@ -24,11 +23,10 @@ export function StaffRegisterPage() {
   return <AuthLayout><div className={styles.container}>
     {preview ? <>
       <div className={pageStyles.previewIcon}><Mail size={28} aria-hidden="true" /></div>
-      <div className={styles.intro}><p className={styles.eyebrow}>PENDING INVITATION · UI PREVIEW</p>
+      <div className={styles.intro}><p className={styles.eyebrow}>PENDING INVITATION</p>
         <h1 ref={heading} tabIndex={-1}>Your next step: Join a workspace.</h1>
         <p className={styles.subtitle}>Once your account is created, a store owner can invite you to their team.</p>
       </div>
-      <PrototypeNotice>Registration is not connected yet. No account was created, no invitation has been received, and no Merchant access has been granted.</PrototypeNotice>
       <ol className={pageStyles.nextSteps} aria-label="Intended team onboarding">
         <li><span>1</span><div><strong>Receive an owner invitation</strong><p>A store owner invites your registered account.</p></div></li>
         <li><span>2</span><div><strong>Review and accept</strong><p>Review the workspace and the permissions offered.</p></div></li>
@@ -46,7 +44,6 @@ export function StaffRegisterPage() {
         <PasswordField id={`${id}-confirm`} name="confirmPassword" label="Confirm password" value={form.values.confirmPassword} error={form.errors.confirmPassword} onChange={form.change} onBlur={form.blur} />
         <Button className={styles.submit} type="submit">Create account</Button>
       </form>
-      <p className={pageStyles.previewNote}>UI preview only. Credentials are not sent or saved.</p>
     </>}
     <p className={styles.switch}>Already have an account? <Link to="/auth/login">Sign in</Link></p>
     <Link className={pageStyles.back} to="/auth/register"><ArrowLeft size={16} aria-hidden="true" />Back to Account Type</Link>

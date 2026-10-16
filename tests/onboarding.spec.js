@@ -78,7 +78,7 @@ test('Staff validates four fields and previews pending invitation without creati
   await page.getByLabel('Password', { exact: true }).fill('x')
   await page.getByRole('button', { name: 'Create account', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your next step: Join a workspace.')
-  await expect(page.getByText(/No account was created, no invitation has been received/)).toBeVisible()
+  await expect(page.getByText(/UI preview|Demo mode/i)).toHaveCount(0)
   await expect(page.getByRole('button', { name: /Accept invitation|Go to Dashboard/ })).toHaveCount(0)
   await expect(page).toHaveURL('/auth/register/staff')
   await page.getByRole('button', { name: 'Back to registration' }).click()

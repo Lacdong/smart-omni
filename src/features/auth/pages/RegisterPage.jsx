@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { ArrowUpRight, Store, Users } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Store, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { AuthLayout } from '../components/AuthLayout'
-import { PrototypeNotice } from '../components/PrototypeNotice'
 import { Button } from '@/shared/ui/button'
 import formStyles from '../components/AuthForm.module.css'
 import styles from './RegisterPage.module.css'
@@ -14,7 +13,9 @@ const roles = [
 
 export function RegisterPage() {
   const [selected, setSelected] = useState(null)
-  return <AuthLayout><div className={formStyles.container}>
+  return <AuthLayout showBackLink={false}
+    footerStart={<Link to="/" className={styles.back}><ArrowLeft size={15} aria-hidden="true" />Back to SmartOmni</Link>}
+    footer={<>Already have an account? <Link to="/auth/login">Sign in</Link></>}><div className={formStyles.container}>
     <div className={formStyles.intro}>
       <p className={formStyles.eyebrow}>YOUR NEXT CHAPTER</p>
       <h1>How will you use SmartOmni?</h1>
@@ -29,7 +30,5 @@ export function RegisterPage() {
         <Button asChild variant="outline" className={styles.continue}><Link to={`/auth/register/${id}`}>{action}<ArrowUpRight aria-hidden="true" /></Link></Button>
       </section>)}
     </div>
-    <PrototypeNotice>Explore either registration path. Choosing a role does not create an account or assign permissions.</PrototypeNotice>
-    <p className={formStyles.switch}>Already have an account? <Link to="/auth/login">Sign in</Link></p>
   </div></AuthLayout>
 }
