@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowUpRight, Search, X } from 'lucide-react'
 import { Brand } from '@/shared/components/Brand'
+import { CatChat } from '@/shared/components/CatChat'
 import { Button } from '@/shared/ui/button'
 import { categories, demoStore } from '../data/catalog'
 import styles from '../Storefront.module.css'
@@ -43,5 +44,6 @@ export function StorefrontLayout() {
       </div>
       <div className={styles.footerBottom}><span>Powered by <Brand /></span></div>
     </footer>
+    <CatChat />
   </div>
 }

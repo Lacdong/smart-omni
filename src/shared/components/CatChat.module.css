@@ -1,0 +1,39 @@
+.launcher { position: fixed; right: max(19px, env(safe-area-inset-right)); bottom: max(102px, calc(env(safe-area-inset-bottom) + 78px)); z-index: 40; display: flex; align-items: center; gap: 2px; padding: 0; border: 0; background: transparent; color: var(--color-foreground); border-radius: 20px; }
+.invitation { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; background: white; border: 1px solid var(--color-border); border-radius: 14px 14px 4px 14px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 18px rgb(0 0 0 / .04); transition: background-color .2s; }
+.launcher:hover .invitation { background: var(--color-accent); }
+.invitation { position: absolute; right: calc(100% + 2px); width: max-content; max-width: calc(100vw - 100px); animation: invitationCycle 10s ease-in-out infinite; }
+@keyframes invitationCycle {
+  0%, 40%, 100% { opacity: 1; visibility: visible; transform: translateX(0); }
+  45%, 95% { opacity: 0; visibility: hidden; transform: translateX(6px); }
+}
+.launcher:hover .invitation, .launcher:focus-visible .invitation { animation: none; opacity: 1; visibility: visible; transform: none; }
+.launcher[data-state='open'] .invitation { animation: none; opacity: 0; visibility: hidden; }
+.mascot { position: relative; display: block; width: 66px; height: 66px; }
+.mascot::after { content: ''; position: absolute; bottom: 0; left: 24%; width: 52%; height: 7px; border-radius: 50%; background: #9c4dff33; filter: blur(4px); animation: shadow 4s ease-in-out infinite; }
+.mascot img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 7px rgb(153 68 255 / .3)); animation: float 4s ease-in-out infinite; transform-origin: 50% 70%; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes shadow { 0%, 100% { transform: scaleX(1); opacity: .65; } 50% { transform: scaleX(.75); opacity: .3; } }
+.panel { position: fixed; right: max(24px, env(safe-area-inset-right)); bottom: max(210px, calc(env(safe-area-inset-bottom) + 192px)); z-index: 60; display: flex; flex-direction: column; width: min(360px, calc(100vw - 32px)); max-height: calc(100dvh - 230px); overflow: auto; border: 1px solid #dce6e4; border-radius: 22px; background: #fff; color: var(--color-foreground); box-shadow: 0 16px 64px rgb(13 54 49 / .16); animation: enter .25s ease-out; }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.header { display: flex; align-items: center; gap: 10px; padding: 16px; border-bottom: 1px solid #e8efed; background: #f5faf8; }
+.avatar { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; border-radius: 14px; background: #eee5ff; }
+.avatar img { object-fit: contain; }
+.title { margin: 0; font-size: 15px; font-weight: 650; }
+.subtitle { margin: 3px 0 0; font-size: 12px; color: #586c67; }
+.close { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; margin-left: auto; border: 0; border-radius: 12px; background: transparent; color: #586c67; }
+.close:hover { background: #e5eeeb; }
+.conversation { padding: 22px 20px; }
+.eyebrow { font-size: 10px; font-weight: 650; letter-spacing: .14em; color: #58706a; }
+.conversation h3 { margin: 8px 0 16px; font-size: 23px; line-height: 1.2; font-weight: 650; letter-spacing: -.04em; }
+.message { margin: 0; padding: 13px 15px; border-radius: 4px 16px 16px; background: #f0f6f3; font-size: 14px; line-height: 1.6; color: #344a43; }
+.suggestions { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 18px; }
+.suggestions button { padding: 10px 12px; border: 1px solid #dce6e1; border-radius: 12px; background: white; text-align: left; font-size: 12px; color: #3e5c52; transition: background-color .2s; }
+.suggestions button:hover { background: #f0f6f3; }
+.composer { margin-top: auto; padding: 0 16px 14px; }
+.inputWrap { display: flex; align-items: flex-end; gap: 8px; padding: 10px; border: 1px solid #dce6e1; border-radius: 15px; }
+.inputWrap:focus-within { border-color: #608e80; }
+.inputWrap textarea { min-width: 0; flex: 1; border: 0; outline: none; resize: none; background: transparent; color: var(--color-foreground); font: inherit; font-size: 13px; line-height: 1.5; }
+.inputWrap button { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border: 0; border-radius: 10px; background: #e4eee9; color: #8a9f96; cursor: not-allowed; }
+.composer > p { margin: 9px 0 0; text-align: center; color: #6c7771; font-size: 11px; }
+@media (max-width: 540px) { .launcher { right: max(11px, env(safe-area-inset-right)); bottom: max(90px, calc(env(safe-area-inset-bottom) + 74px)); } .mascot { width: 62px; height: 62px; } .panel { right: 16px; bottom: max(190px, calc(env(safe-area-inset-bottom) + 174px)); max-height: calc(100dvh - 206px); } }
+@media (prefers-reduced-motion: reduce) { .mascot img, .mascot::after, .panel, .invitation { animation: none; } }
