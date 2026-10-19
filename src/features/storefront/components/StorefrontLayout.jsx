@@ -1,39 +1,17 @@
-import { useRef, useState } from 'react'
-import { Link, Outlet, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowUpRight, Search, X } from 'lucide-react'
+import { StorefrontHeader } from './StorefrontHeader'
+import { Link, Outlet, useParams } from 'react-router-dom'
+import { ArrowUpRight } from 'lucide-react'
 import { Brand } from '@/shared/components/Brand'
-import { CatChat } from '@/shared/components/CatChat'
 import { Button } from '@/shared/ui/button'
 import { categories, demoStore } from '../data/catalog'
 import styles from '../Storefront.module.css'
 
 export function StorefrontLayout() {
   const { storeSlug } = useParams()
-  const [params] = useSearchParams()
-  const [searchOpen, setSearchOpen] = useState(false)
-  const searchTrigger = useRef(null)
-  const navigate = useNavigate()
   const base = `/store/${demoStore.slug}`
   if (storeSlug !== demoStore.slug) return <main id="main-content" className={styles.unavailable} tabIndex={-1}><h1>Store not found.</h1><p>This store is unavailable or its address has changed.</p><Button asChild variant="outline"><Link to="/">Back to SmartOmni</Link></Button></main>
-  function search(event) {
-    event.preventDefault()
-    const value = new FormData(event.currentTarget).get('q').trim()
-    navigate(value ? `${base}?q=${encodeURIComponent(value)}` : base)
-    setSearchOpen(false)
-    searchTrigger.current?.focus()
-  }
   return <div className={styles.store}>
-    <header className={styles.header}>
-      <Link to={base} className={styles.storeBrand} aria-label="SmartOmni Storefront home"><span>SMARTOMNI</span><small>STOREFRONT</small></Link>
-      <div className={styles.rightNav}><span>THOUGHTFUL ESSENTIALS</span>
-        <Button ref={searchTrigger} variant="ghost" size="icon" className={styles.iconButton} aria-label={searchOpen ? 'Close search' : 'Search this store'} aria-expanded={searchOpen} aria-controls="store-header-search" onClick={() => setSearchOpen(!searchOpen)}>{searchOpen ? <X size={18} /> : <Search size={18} />}</Button>
-      </div>
-      {searchOpen && <form id="store-header-search" role="search" aria-label="Search this store" onSubmit={search} className={styles.headerSearch} onKeyDown={event => { if (event.key === 'Escape') { setSearchOpen(false); searchTrigger.current?.focus() } }}>
-        <Search size={19} aria-hidden="true" />
-        <input name="q" type="search" aria-label="Search products" defaultValue={params.get('q') || ''} placeholder="Search the collection…" autoComplete="off" autoFocus />
-        <Button type="submit" variant="ghost" size="icon" aria-label="Search"><ArrowUpRight size={20} /></Button>
-      </form>}
-    </header>
+    <StorefrontHeader base={base} />
     <Outlet context={{ base }} />
     <footer className={styles.footer} id="about-store">
       <div className={styles.footerColumns}>
@@ -44,6 +22,5 @@ export function StorefrontLayout() {
       </div>
       <div className={styles.footerBottom}><span>Powered by <Brand /></span></div>
     </footer>
-    <CatChat />
   </div>
 }

@@ -5,10 +5,11 @@ import { Button } from '@/shared/ui/button'
 import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/shared/ui/dialog'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/ui/tabs'
-import { categories, formatPrice, lowestPrice, products } from '../data/catalog'
+import { categories, discoveryCategories, formatPrice, lowestPrice, products } from '../data/catalog'
 import styles from '../Storefront.module.css'
 import detail from './ProductDetail.module.css'
 import { ProductReviews, RecentlyViewed } from '../components/ProductExtras'
+import { SaveProductButton } from '../components/SaveProductButton'
 
 const colourSwatches = { White: '#fafafa', Black: '#353535', Sand: '#c8b79a', Cloud: '#e4e6e7', Natural: '#ddd1b9', Olive: '#72765a' }
 
@@ -22,7 +23,7 @@ export function ProductDetailPage() {
   if (!product || !item) return <main id="main-content" className={styles.unavailable} tabIndex={-1}><h1>{product ? 'This option is unavailable.' : 'Product not found.'}</h1><p>Explore the collection to find another product or option.</p><Button asChild variant="outline"><Link to={product ? `${base}/products/${product.id}` : base}>Back to {product ? 'product' : 'collection'}</Link></Button></main>
   const prices = item.offers.filter(offer => offer.available).map(offer => offer.price)
   const lowest = prices.length ? Math.min(...prices) : null
-  const category = categories.find(entry => entry.id === product.category)
+  const category = [...categories, ...discoveryCategories].find(entry => entry.id === product.category)
   const selectedIndex = product.variants.indexOf(item)
   const related = products.filter(entry => entry.id !== product.id).sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category)).slice(0, 4)
   const imageStyle = variant => product.id === 'wireless-mouse' && variant.colour === 'Black' ? { filter: 'brightness(.25)' } : undefined
@@ -42,6 +43,7 @@ export function ProductDetailPage() {
       </div>
       <div className={`${styles.detailInfo} ${detail.info}`}>
         <h1>{product.name}</h1>
+        <SaveProductButton product={product} />
         <p className={`${styles.detailDescription} ${detail.description}`}>{product.description}</p>
         <p className={detail.price}>{lowest !== null ? <><span>From </span>{formatPrice(lowest)}</> : 'Currently unavailable'}</p>
         <h2 className={detail.optionsHeading}>Options</h2>

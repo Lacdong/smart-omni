@@ -1,0 +1,4 @@
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 12px; background: white; color: #171717; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+.button:hover { background: #f3f3f3; border-color: #999; }
+.button[aria-pressed='true'] { color: #171717; border-color: #aaa; }
+.compact { position: absolute; top: 8px; right: 8px; z-index: 2; width: 32px; min-height: 32px; padding: 0; border-radius: 50%; background: #fffffff0; }

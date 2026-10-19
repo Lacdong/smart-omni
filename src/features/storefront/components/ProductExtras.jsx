@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
-import { Clock3, MessageSquare, Star } from 'lucide-react'
+import { ArrowRight, Clock3, MessageSquare, Star } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
 import { demoStore, formatPrice, lowestPrice, products } from '../data/catalog'
 import detail from '../pages/ProductDetail.module.css'
+import recentStyles from './RecentlyViewed.module.css'
 
 const storageEvent = 'smartomni-store-storage'
 function subscribe(listener) {
@@ -60,9 +61,16 @@ export function RecentlyViewed({ productId, base, contained = false }) {
   useEffect(() => {
     if (productId && ids[0] !== productId) save([productId, ...ids.filter(id => id !== productId)].slice(0, 12))
   }, [productId, ids, save])
-  const recent = ids.filter(id => id !== productId).slice(0, 4).map(id => products.find(product => product.id === id))
-  return <section className={`${detail.recentlyViewed} ${contained ? detail.recentContained : ''}`} aria-labelledby="recently-viewed"><div className={detail.relatedInner}>
-    <div className={detail.relatedHeading}><h2 id="recently-viewed">Recently viewed</h2><span>On this device</span></div>
-    {recent.length ? <div className={detail.relatedGrid}>{recent.map(product => <article key={product.id}><Link to={`${base}/products/${product.id}`} className={detail.relatedImage}><img src={product.image} alt={product.name} loading="lazy" /></Link><h3><Link to={`${base}/products/${product.id}`}>{product.name}</Link></h3><strong>{lowestPrice(product) !== null ? formatPrice(lowestPrice(product)) : 'Unavailable'}</strong></article>)}</div> : <div className={detail.recentEmpty}><Clock3 size={20} aria-hidden="true" /><p>The products you explore will appear here.</p><Link to={base}>Explore the collection</Link></div>}
-  </div></section>
+  const recent = ids.filter(id => id !== productId).slice(0, 10).map(id => products.find(product => product.id === id))
+  return <section className={`${recentStyles.section} ${contained ? recentStyles.contained : ''}`} aria-labelledby="recently-viewed">
+    <div className={recentStyles.heading}><h2 id="recently-viewed">Recently viewed</h2><span><Clock3 size={14} aria-hidden="true" />On this device</span></div>
+    {recent.length ? <div className={recentStyles.grid}>{recent.map(product => <article className={recentStyles.card} key={product.id}>
+      <Link to={`${base}/products/${product.id}`} className={recentStyles.image} aria-label={`View ${product.name}`}><img src={product.image} alt={product.name} loading="lazy" className={product.imageMode === 'contain' ? recentStyles.contain : ''} /></Link>
+      <div className={recentStyles.copy}><h3><Link to={`${base}/products/${product.id}`}>{product.name}</Link></h3><p>{lowestPrice(product) !== null ? <><span>From</span> <strong>{formatPrice(lowestPrice(product))}</strong></> : 'Unavailable'}</p></div>
+    </article>)}</div> : <div className={recentStyles.empty}>
+      <div className={recentStyles.emptyIcon}><Clock3 size={26} strokeWidth={1.4} aria-hidden="true" /></div>
+      <div className={recentStyles.emptyCopy}><h3>A little inspiration for later</h3><p>The products you explore will appear here.</p></div>
+      <a className={recentStyles.explore} href={contained ? '#just-for-you' : base}>Explore the collection <ArrowRight size={16} aria-hidden="true" /></a>
+    </div>}
+  </section>
 }

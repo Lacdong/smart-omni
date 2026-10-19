@@ -10,7 +10,6 @@ import { PricingTeaser } from './sections/PricingTeaser'
 import { FinalCTA } from './sections/FinalCTA'
 import { Footer } from './sections/Footer'
 import { StorefrontLauncher } from './components/StorefrontLauncher'
-import { CatChat } from '@/shared/components/CatChat'
 import styles from './LandingPage.module.css'
 
 export function LandingPage() {
@@ -29,6 +28,5 @@ export function LandingPage() {
     </main>
     <Footer />
     <StorefrontLauncher />
-    <CatChat />
   </div>
 }
