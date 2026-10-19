@@ -6,7 +6,7 @@ import styles from './StorefrontDiscovery.module.css'
 import { FlashDeals } from './FlashDeals'
 
 const categoryIcons = [Shirt, Shirt, Flower2, Smartphone, House, Headphones, Briefcase, Footprints, Watch, Dumbbell, Heart, Blocks, Apple, BookOpen, Cat, Car, Gem, Plane, Gamepad2, Ellipsis]
-const shortcuts = [['Flash Deals', Zap, '#flash-deals'], ['Shopee', Truck, '?channel=shopee'], ['Marketplaces', ShoppingBag, '#marketplaces'], ['Compare prices', Ticket, '#just-for-you'], ['Top Searches', TrendingUp, '#top-searches'], ['Workspace', Sparkles, '?category=workspace'], ['Everyday finds', CalendarDays, '?category=everyday'], ['Categories', Grid2X2, '#categories']]
+const shortcuts = [['Flash Deals', Zap, '/flash-sale'], ['Shopee', Truck, '?channel=shopee'], ['Marketplaces', ShoppingBag, '#marketplaces'], ['Compare prices', Ticket, '#just-for-you'], ['Top Searches', TrendingUp, '#top-searches'], ['Workspace', Sparkles, '?category=workspace'], ['Everyday finds', CalendarDays, '?category=everyday'], ['Categories', Grid2X2, '#categories']]
 const slides = [
   { eyebrow: 'MAKE ROOM FOR BETTER', title: 'Your space.\nYour style.', description: 'Thoughtful essentials for a home that feels like you.', category: 'lighting', cta: 'Shop home & living', image: products[2].image },
   { eyebrow: 'A BETTER EVERYDAY', title: 'Less noise.\nMore you.', description: 'Find your rhythm with considered audio essentials.', category: 'audio', cta: 'Explore audio', image: products[1].image },

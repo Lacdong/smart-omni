@@ -22,6 +22,7 @@ export const router = createBrowserRouter([
       { path: '/auth/register/staff', element: <StaffRegisterPage /> },
       { path: '/store/:storeSlug', lazy: async () => ({ Component: (await import('@/features/storefront/components/StorefrontLayout')).StorefrontLayout }), children: [
         { index: true, lazy: async () => ({ Component: (await import('@/features/storefront/pages/CatalogPage')).CatalogPage }) },
+        { path: 'flash-sale', lazy: async () => ({ Component: (await import('@/features/storefront/pages/FlashSalePage')).FlashSalePage }) },
         { path: 'products/:productId', lazy: async () => ({ Component: (await import('@/features/storefront/pages/ProductDetailPage')).ProductDetailPage }) },
       ] },
       { path: '/auth/register/owner', element: <OwnerOnboardingLayout />, children: [
