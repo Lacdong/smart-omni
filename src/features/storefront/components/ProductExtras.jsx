@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { useCallback, useMemo, useState, useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Clock3, MessageSquare, Star } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
 import { demoStore, formatPrice, lowestPrice, products } from '../data/catalog'
 import detail from '../pages/ProductDetail.module.css'
 import recentStyles from './RecentlyViewed.module.css'
+import { useRecordProductView } from './useRecordProductView'
 
 const storageEvent = 'smartomni-store-storage'
 function subscribe(listener) {
@@ -55,12 +56,17 @@ export function ProductReviews({ productId }) {
   </div>
 }
 
+export function ProductRatingSummary({ productId, className }) {
+  const [stored] = useStoredList(`smartomni:${demoStore.slug}:reviews:${productId}`)
+  const reviews = stored.filter(review => review && Number.isFinite(review.rating) && review.rating >= 1 && review.rating <= 5)
+  const average = reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0
+  return <div className={className}><strong>{reviews.length ? average.toFixed(1) : '—'}</strong><span aria-label={reviews.length ? `${average.toFixed(1)} out of 5 stars` : 'No ratings yet'}>{[1, 2, 3, 4, 5].map(value => <Star key={value} size={12} fill={value <= Math.round(average) ? 'currentColor' : 'none'} aria-hidden="true" />)}</span><a href="#product-information">{reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}</a><small>On this device</small></div>
+}
+
 export function RecentlyViewed({ productId, base, contained = false }) {
-  const [stored, save] = useStoredList(`smartomni:${demoStore.slug}:recently-viewed`)
+  const [stored] = useStoredList(`smartomni:${demoStore.slug}:recently-viewed`)
   const ids = useMemo(() => [...new Set(stored.filter(id => products.some(product => product.id === id)))].slice(0, 12), [stored])
-  useEffect(() => {
-    if (productId && ids[0] !== productId) save([productId, ...ids.filter(id => id !== productId)].slice(0, 12))
-  }, [productId, ids, save])
+  useRecordProductView(productId)
   const recent = ids.filter(id => id !== productId).slice(0, 10).map(id => products.find(product => product.id === id))
   return <section className={`${recentStyles.section} ${contained ? recentStyles.contained : ''}`} aria-labelledby="recently-viewed">
     <div className={recentStyles.heading}><h2 id="recently-viewed">Recently viewed</h2><span><Clock3 size={14} aria-hidden="true" />On this device</span></div>
