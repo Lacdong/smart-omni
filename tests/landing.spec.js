@@ -81,7 +81,7 @@ for (const width of [375, 1100, 1280]) {
     await heroLink.click()
     await expect(page).toHaveURL(/\/store\/everyday-studio$/)
     await expect(page.getByRole('dialog')).toHaveCount(0)
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('LESS, BUT BETTER')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Your space\.\s*Your style\./)
   })
 }
 

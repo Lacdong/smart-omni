@@ -12,6 +12,10 @@ import styles from './PortalPage.module.css'
 
 const OwnerDashboard = lazy(() => import('./OwnerDashboard'))
 const AdminConsole = lazy(() => import('@/features/platform/AdminConsole'))
+const StoreSettings = lazy(() => import('./StoreSettings'))
+const TeamPage = lazy(() => import('./TeamPage'))
+const StaffWorkspace = lazy(() => import('./StaffWorkspace'))
+const StaffInvitations = lazy(() => import('./StaffInvitations'))
 
 export function PortalPage() {
   const session = useDemoSession()
@@ -31,10 +35,15 @@ export function PortalPage() {
   const notifications = pathname === `${base}/notifications`
   if (admin && notifications) return <Navigate to="/admin/shop-alerts" replace />
   const home = admin ? '/admin' : '/merchant/dashboard'
-  if (!admin && ![home, `${base}/profile`, `${base}/notifications`].includes(pathname)) return <Navigate to={home} replace />
+  const storeSettings = ['/merchant/settings/profile', '/merchant/settings/appearance', '/merchant/settings/policies'].includes(pathname)
+  const teamPage = pathname === '/merchant/team'
+  const ownerPage = storeSettings || teamPage
+  if (!admin && ![home, `${base}/profile`, `${base}/notifications`].includes(pathname) && !ownerPage) return <Navigate to={home} replace />
   const suspended = tenantStatus === 'SUSPENDED'
   const ownerAccess = !suspended && session.role === 'TENANT_OWNER' && session.membershipStatus === 'ACTIVE' && session.onboardingStatus === 'COMPLETED'
-  const title = profile ? 'Your profile' : notifications ? 'Notifications' : admin ? pathname.startsWith('/admin/tenants') ? 'Tenants' : pathname === '/admin/plans' ? 'Plans & limits' : pathname === '/admin/audit' ? 'Action log' : pathname === '/admin/security' ? 'Security logs' : pathname.startsWith('/admin/shop-alerts') ? 'Shop connection alerts' : pathname.startsWith('/admin/operations') ? 'Operational alerts' : 'Platform overview' : 'Overview'
+  const staffAccess = !suspended && session.role === 'TENANT_STAFF' && session.membershipStatus === 'ACTIVE'
+  if (ownerPage && !ownerAccess) return <Navigate to={home} replace />
+  const title = storeSettings ? 'Store settings' : teamPage ? 'Team' : profile ? 'Your profile' : notifications ? 'Notifications' : admin ? pathname.startsWith('/admin/tenants') ? 'Tenants' : pathname === '/admin/plans' ? 'Plans & limits' : pathname === '/admin/audit' ? 'Action log' : pathname === '/admin/security' ? 'Security logs' : pathname.startsWith('/admin/shop-alerts') ? 'Shop connection alerts' : pathname.startsWith('/admin/operations') ? 'Operational alerts' : 'Platform overview' : 'Overview'
   const navigation = admin ? [[home, LayoutDashboard, 'Overview'], ['/admin/tenants', Building2, 'Tenants'], ['/admin/plans', CreditCard, 'Plans & limits'], ['/admin/shop-alerts', Link2, 'Shop alerts'], ['/admin/operations', Activity, 'Operational alerts'], ['/admin/audit', ScrollText, 'Activity log'], ['/admin/security', ShieldCheck, 'Security logs'], [`${base}/profile`, CircleUserRound, 'Your profile']] : [[home, LayoutDashboard, 'Overview'], [`${base}/notifications`, Bell, 'Notifications'], [`${base}/profile`, CircleUserRound, 'Your profile']]
   function logout() { signOutDemo(); navigate('/auth/login', { replace: true }) }
   return <div className={styles.shell}>
@@ -43,18 +52,21 @@ export function PortalPage() {
       <div className={styles.workspace}><span className={styles.storeIcon}>{admin ? <ShieldCheck size={19} /> : <Store size={19} />}</span><div><strong>{session.tenantName || (admin ? 'SmartOmni Platform' : 'Your workspace')}</strong><span>{session.roleLabel}</span></div></div>
       <p className={styles.navLabel}>{admin ? 'PLATFORM' : 'WORKSPACE'}</p>
       {admin && <label className={styles.platformMobileNav}><span className="sr-only">Platform navigation</span><select aria-label="Platform navigation" value={navigation.find(([to]) => to !== '/admin' && pathname.startsWith(to))?.[0] || '/admin'} onChange={event => navigate(event.target.value)}>{navigation.map(([to, , label]) => <option value={to} key={to}>{label}</option>)}</select></label>}
-      <nav>{navigation.map(([to, Icon, label]) => <Link key={to} to={to} aria-current={pathname === to || (to !== home && pathname.startsWith(to + '/')) ? 'page' : undefined}><Icon size={18} aria-hidden="true" />{label}{label === 'Overview' && !ownerAccess && !admin && <LockKeyhole size={14} className={styles.navLock} aria-label="Locked" />}</Link>)}</nav>
-      {ownerAccess && <><p className={styles.navLabel}>STORE OPERATIONS</p><nav>{[['orders', 'Recent orders', Package], ...(tenantFeatures.inventoryAlerts ? [['inventory', 'Inventory alerts', Boxes]] : []), ['channels', 'Sales channels', Store]].map(([id, label, Icon]) => <a key={id} href={`${home}#${id}`}><Icon size={18} aria-hidden="true" />{label}</a>)}</nav></>}
+      {ownerAccess && <label className={styles.platformMobileNav}><span className="sr-only">Workspace page</span><select aria-label="Workspace page" value={storeSettings ? '/merchant/settings/profile' : pathname} onChange={event => navigate(event.target.value)}>{[...navigation.map(([to, , label]) => [to, label]), ['/merchant/settings/profile', 'Store settings'], ['/merchant/team', 'Team']].map(([to, label]) => <option key={to} value={to}>{label}</option>)}</select></label>}
+      <nav>{navigation.map(([to, Icon, label]) => <Link key={to} to={to} aria-current={pathname === to || (to !== home && pathname.startsWith(to + '/')) ? 'page' : undefined}><Icon size={18} aria-hidden="true" />{label}{label === 'Overview' && !ownerAccess && !staffAccess && !admin && <LockKeyhole size={14} className={styles.navLock} aria-label="Locked" />}</Link>)}</nav>
+      {ownerAccess && <><p className={styles.navLabel}>STORE OPERATIONS</p><nav>{[['orders', 'Recent orders', Package], ...(tenantFeatures.inventoryAlerts ? [['inventory', 'Inventory alerts', Boxes]] : []), ['channels', 'Sales channels', Store]].map(([id, label, Icon]) => <a key={id} href={`${home}#${id}`}><Icon size={18} aria-hidden="true" />{label}</a>)}<Link to="/merchant/settings/profile" aria-current={storeSettings ? 'page' : undefined}><Store size={18} />Store settings</Link><Link to="/merchant/team" aria-current={teamPage ? 'page' : undefined}><CircleUserRound size={18} />Team</Link></nav></>}
       <div className={styles.sidebarBottom}><p>Demo workspace<span>Sample data. No live connections.</span></p><Button variant="ghost" onClick={logout}><LogOut size={16} aria-hidden="true" />Sign out</Button></div>
     </aside>
     <div className={styles.main}>
       <header className={styles.topbar}><span>{admin ? 'Platform' : 'Workspace'}<span className={styles.slash}>/</span><strong>{title}</strong></span><div><span className={styles.demoBadge}>Demo mode</span><Link className={styles.bell} to={`${base}/notifications`} aria-label="Notifications"><Bell size={18} /></Link><Link className={styles.avatar} to={`${base}/profile`} aria-label="Your profile">{session.name.split(' ').map(word => word[0]).join('')}</Link><Button variant="ghost" size="icon" className={styles.mobileLogout} aria-label="Sign out" onClick={logout}><LogOut size={18} /></Button></div></header>
       <main id="main-content" tabIndex={-1} className={styles.content}>
         {profile ? <><div className={styles.pageHeading}><p>ACCOUNT</p><h1>Your profile</h1></div><section className={styles.accountCard}><h2>Personal information</h2><dl><dt>Full name</dt><dd>{session.name}</dd><dt>Email address</dt><dd>{session.email}</dd><dt>Role</dt><dd>{session.roleLabel}</dd><dt>Workspace</dt><dd>{session.tenantName || 'No workspace assigned'}</dd></dl><p>This demo profile is read-only.</p></section></>
-          : notifications ? <><div className={styles.pageHeading}><p>YOUR INBOX</p><h1>Notifications</h1></div><section className={styles.emptyPanel}><Bell size={28} aria-hidden="true" /><h2>You’re all caught up</h2><p>{session.role === 'TENANT_STAFF' ? 'No workspace invitations yet. When an owner invites you, review and accept the invitation here.' : 'There are no new account notifications in this demo.'}</p></section></>
+          : notifications ? <><div className={styles.pageHeading}><p>YOUR INBOX</p><h1>Notifications</h1></div>{session.role === 'TENANT_STAFF' ? <Suspense fallback={<p role="status">Loading invitations…</p>}><StaffInvitations session={session} /></Suspense> : <section className={styles.emptyPanel}><Bell size={28} aria-hidden="true" /><h2>You’re all caught up</h2><p>There are no new account notifications in this demo.</p></section>}</>
             : admin ? <Suspense fallback={<p role="status">Loading platform administration…</p>}><AdminConsole /></Suspense>
               : suspended ? <section className={styles.locked}><span className={styles.lockIcon}><LockKeyhole size={28} aria-hidden="true" /></span><p className={styles.kicker}>WORKSPACE SUSPENDED</p><h1>Workspace access is paused.</h1><p>A platform administrator has suspended this workspace. Contact your administrator for review. Your profile and account notifications remain available.</p><Button asChild><Link to="/merchant/profile">View your profile</Link></Button></section>
-              : ownerAccess ? <Suspense fallback={<p role="status">Loading your dashboard…</p>}><OwnerDashboard session={session} /></Suspense>
+              : ownerAccess ? <Suspense fallback={<p role="status">Loading workspace…</p>}>{storeSettings ? <StoreSettings /> : teamPage ? <TeamPage /> : <OwnerDashboard session={session} />}</Suspense>
+                : staffAccess ? <Suspense fallback={<p role="status">Loading workspace…</p>}><StaffWorkspace session={session} /></Suspense>
+                : session.membershipStatus === 'SUSPENDED' ? <section className={styles.locked}><h1>Your staff access is suspended.</h1><p>Ask your owner to restore your workspace membership.</p></section>
                 : <section className={styles.locked}><span className={styles.lockIcon}><LockKeyhole size={28} aria-hidden="true" /></span><p className={styles.kicker}>PENDING INVITATION</p><h1>Your workspace is waiting.</h1><p>Your dashboard is locked until a Tenant Owner invites you to their workspace and you accept the invitation.</p><ol><li><span>1</span>Receive an invitation from your store owner</li><li><span>2</span>Review the workspace and your permissions</li><li><span>3</span>Accept to unlock your dashboard</li></ol><Button asChild><Link to="/merchant/notifications">Check invitations</Link></Button><p className={styles.lockedFoot}>You can still view your profile, check notifications and sign out.</p></section>}
       </main>
     </div>

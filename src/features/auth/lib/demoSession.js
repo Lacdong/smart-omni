@@ -1,13 +1,25 @@
 import { demoAccounts, demoPassword } from '../data/demoAccounts'
 import { recordDemoSecurityEvent } from './demoSecurityLog'
+import { readStaffMembership } from '@/features/portal/lib/merchantStore'
 
 const storageKey = 'smartomni.demo-session'
 const changeEvent = 'smartomni:demo-session'
+let staffSnapshotKey = ''
+let staffSnapshot = null
 
 export function getDemoSession() {
   try {
     const id = sessionStorage.getItem(storageKey)
-    return demoAccounts.find(account => account.id === id) ?? null
+    const account = demoAccounts.find(account => account.id === id) ?? null
+    if (account?.role !== 'TENANT_STAFF') return account
+    const membership = readStaffMembership()
+    if (!membership || membership.status === 'INVITED') return account
+    const key = JSON.stringify(membership)
+    if (key !== staffSnapshotKey) {
+      staffSnapshotKey = key
+      staffSnapshot = { ...account, tenantId: 'demo-tenant', tenantName: 'Everyday Studio', membershipStatus: membership.status, onboardingStatus: 'COMPLETED', permissions: membership.status === 'ACTIVE' ? membership.permissions : [] }
+    }
+    return staffSnapshot
   } catch { return null }
 }
 

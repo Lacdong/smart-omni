@@ -1,16 +1,28 @@
 # SmartOmni — Frontend
 
-SmartOmni có Landing Page, Storefront, luồng đăng ký/onboarding và đăng nhập demo theo role. Merchant Portal hiện có dashboard Tenant Owner và trang khóa cho Tenant Staff chưa nhận lời mời. Frontend dùng **React + JavaScript/JSX + Vite**; chưa kết nối backend. Dữ liệu dashboard và marketplace đều là mock data.
+SmartOmni có Landing Page, Storefront, luồng đăng ký/onboarding và đăng nhập demo theo role. Merchant Portal có dashboard Owner, Store settings và Team; Staff mở workspace theo quyền đọc sau khi nhận lời mời demo. Frontend dùng **React + JavaScript/JSX + Vite**; chưa kết nối backend. Dữ liệu dashboard và marketplace đều là mock data.
 
 ## Đăng nhập demo
 
 Mở `/auth/login`, nhập email của role giả định bên dưới và mật khẩu rồi bấm **Sign in**. Thông tin tài khoản demo chỉ được ghi tại đây; trang đăng nhập không hiển thị phần chọn role. Mật khẩu chung: `Demo@123`.
 
 - Tenant Owner: `owner@smartomni.demo` → `/merchant/dashboard`. Tenant mẫu đã hoàn tất onboarding; xem số liệu, đổi kỳ, lọc và xem chi tiết đơn, xuất báo cáo CSV.
-- Tenant Staff: `staff@smartomni.demo` → dashboard khóa vì chưa có lời mời/membership ACTIVE. Chỉ mở Notifications, Your profile và Sign out; không tải dữ liệu dashboard Owner.
+- Tenant Staff: `staff@smartomni.demo` → dashboard khóa trước ACTIVE membership; nhận lời mời demo tại Notifications để mở các phần được Owner cấp quyền đọc. Không mở dashboard tài chính hoặc thiết lập của Owner.
 - Super Admin: `admin@smartomni.demo` → `/admin`, dashboard quản trị nền tảng, danh sách/chi tiết tenant, khóa/mở khóa, quản lý gói và lịch sử thao tác.
 
 Phiên demo chỉ lưu ID fixture trong `sessionStorage`, duy trì khi reload và xóa khi đăng xuất. Không lưu mật khẩu hoặc tạo token thật. Route guard chỉ phục vụ bản demo frontend, không thay thế xác thực/phân quyền backend. Tài khoản mẫu ở `src/features/auth/data/demoAccounts.js`; dữ liệu Owner ở `src/features/portal/data/ownerDashboard.js`.
+
+## Owner — Store settings & Team (UC 3.3–3.7, frontend demo)
+
+- `/merchant/settings/profile`: lưu tên, email liên hệ, điện thoại và mô tả cửa hàng; có kiểm tra dữ liệu bắt buộc/email, lưu hoặc bỏ bản nháp. Thông tin đã lưu xuất hiện ở footer storefront mẫu.
+- `/merchant/settings/appearance`: headline, announcement, ba palette Neutral/Forest/Navy và khoảng cách catalog Comfortable/Compact. Mở Preview storefront để xem; thay đổi đã lưu đồng bộ giữa các tab cùng trình duyệt.
+- `/merchant/settings/policies`: nhập chính sách vận chuyển, đổi trả và riêng tư; storefront hiển thị phần đã có nội dung dưới dạng accordion. Đây là nội dung Owner tự nhập, không phải chính sách mặc định do ứng dụng đưa ra.
+- `/merchant/team`: tạo lời mời theo email, chặn trùng và lời mời tới tài khoản Owner/Admin; sửa quyền đọc đơn/tồn kho, thu hồi lời mời, tạm khóa/khôi phục hoặc gỡ thành viên. Thao tác cắt quyền có hộp xác nhận. Owner chỉ truy cập được khi tenant ACTIVE.
+- Kiểm tra nhận lời mời: Owner mời `staff@smartomni.demo`, sau đó đăng nhập Staff ở tab khác, mở Notifications và Accept demo invitation. Workspace Staff chỉ hiện các panel được cấp quyền; thay đổi quyền, tạm khóa/gỡ membership cập nhật ngay cả ở tab Staff đang mở và giữ sau reload. Staff không vào được các route settings/team; tenant bị khóa cũng chặn workspace Staff.
+
+Các màn này giữ style sáng, phẳng và component Button/Dialog của dự án. Store settings dùng tab; Team dùng form lời mời và danh sách thành viên. Dữ liệu công khai của storefront lưu riêng tại `smartomni.store-settings-demo.v1`; email staff/membership ở `smartomni.team-demo.v1`, không được hiển thị trên storefront. Chỉ hỗ trợ tenant mẫu Everyday Studio; không cấp subdomain. Dữ liệu giữ sau reload/đăng xuất, xóa hai key để reset. Lỗi ghi storage được báo tại form, không báo lưu thành công giả.
+
+UC 3.5 mới hoàn tất luồng mô phỏng: không gửi email thật, không có token hay thời hạn lời mời. Chỉ tài khoản Staff mẫu có thể đăng nhập nhận lời mời; email khác giữ pending. Hạn mức staff/subscription và số staff mẫu trong Admin chưa được nối với danh sách Team này. Phân quyền frontend và browser storage không thay thế backend; chưa có API, database hay xác thực thật. Chưa bổ sung dark mode. Test mới ở `tests/merchant-settings.spec.js`.
 
 ## Super Admin — prototype
 
