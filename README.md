@@ -35,6 +35,14 @@ Storage cũ tự bổ sung định nghĩa tính năng và cảnh báo khi đọc
 
 Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing. Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
 
+## Deploy lên Vercel
+
+Repo có `vercel.json` cho Vite: build bằng `npm run build`, output `dist`, rewrite các route SPA về `/index.html` để mở trực tiếp hoặc reload `/auth/login`, `/admin`, `/merchant/dashboard` không bị 404.
+
+Trong Vercel Project Settings, kiểm tra Git repository là `Lacdong/smart-omni`, Production Branch là `main`, Root Directory là thư mục chứa `package.json` (repo này là root). Kiểm tra deployment gắn với domain production thực sự dùng commit mới đã push. Push Git thành công không chứng minh deployment đã build thành công hoặc production domain đã trỏ sang deployment đó.
+
+Nếu bấm Sign in còn hiện `Sign-in is not connected yet`, domain đang phục vụ bản đăng nhập placeholder cũ. Deploy commit mới từ đúng repo/branch, kiểm tra Build Logs/Source và trạng thái Ready; nếu dùng Redeploy, chọn deployment có đúng commit mới, không dựng lại một deployment cũ. Khi cần kiểm tra build sạch, tắt lựa chọn dùng lại Build Cache. Bản demo không cần biến môi trường hoặc backend để đăng nhập.
+
 ## Cấu trúc thư mục hiện tại
 
 Trong cây dưới đây, ký hiệu `Tên.{jsx,module.css}` đại diện cho hai file cùng tên, ví dụ `Hero.jsx` và `Hero.module.css`. Các file font và tài liệu nội bộ của UI/UX skill được gom theo nhóm; các thư mục con đều được thể hiện.
