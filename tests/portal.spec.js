@@ -58,10 +58,10 @@ test('staff without invitation sees locked dashboard and no business fixtures', 
 test('super admin has a separate destination and cannot open merchant data', async ({ page }) => {
   await login(page, 'Super Admin')
   await expect(page).toHaveURL(/\/admin$/)
-  await expect(page.getByRole('heading', { name: 'Platform access confirmed.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Platform overview' })).toBeVisible()
   await page.goto('/merchant/dashboard')
   await expect(page).toHaveURL(/\/admin$/)
-  await expect(page.getByRole('table')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Your store at a glance.' })).toHaveCount(0)
 })
 
 for (const width of [375, 768, 1024, 1440]) {

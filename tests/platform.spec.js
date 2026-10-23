@@ -1,0 +1,113 @@
+import { expect, test } from '@playwright/test'
+
+async function admin(page, path = '/admin') {
+  await page.goto('/auth/login')
+  await page.getByLabel('Email address').fill('admin@smartomni.demo')
+  await page.getByLabel('Password', { exact: true }).fill('Demo@123')
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Platform overview', exact: true })).toBeVisible()
+  if (path !== '/admin') await page.goto(path)
+}
+
+test('tenant directory searches and filters, retains URL state and recovers from empty results', async ({ page }) => {
+  await admin(page, '/admin/tenants')
+  await expect(page.getByRole('table').getByRole('row')).toHaveCount(9)
+  await page.getByLabel('Search tenants').fill('not-a-workspace')
+  await expect(page.getByText('No tenants match these filters.', { exact: false })).toBeVisible()
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await page.getByLabel('Status', { exact: true }).selectOption('SUSPENDED')
+  await expect(page.getByRole('table').getByRole('row')).toHaveCount(2)
+  await expect(page.getByRole('link', { name: 'Northline Goods', exact: true })).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Status', { exact: true })).toHaveValue('SUSPENDED')
+  await page.goto('/admin/tenants/missing')
+  await expect(page.getByRole('heading', { name: 'Tenant not found' })).toBeVisible()
+})
+
+test('suspension requires a reason, persists, updates owner access in an open tab, and reactivation restores it', async ({ page, context }) => {
+  await admin(page, '/admin/tenants/demo-tenant')
+  const owner = await context.newPage()
+  await owner.goto('/auth/login')
+  // A separate tab has its own fixture session. Switch only this tab to the owner.
+  await owner.evaluate(() => sessionStorage.setItem('smartomni.demo-session', 'demo-owner'))
+  await owner.goto('/merchant/dashboard')
+  await expect(owner.getByRole('heading', { name: 'Your store at a glance.' })).toBeVisible()
+  await page.getByRole('button', { name: 'Suspend tenant', exact: true }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Suspend tenant', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.getByRole('dialog').getByLabel('Reason').fill('Workspace review requested by platform operations.')
+  await page.getByRole('dialog').getByRole('button', { name: 'Suspend tenant', exact: true }).click()
+  await expect(owner.getByRole('heading', { name: 'Workspace access is paused.' })).toBeVisible()
+  await expect(owner.getByRole('table')).toHaveCount(0)
+  await owner.getByRole('link', { name: 'View your profile' }).click()
+  await expect(owner.getByRole('heading', { name: 'Your profile' })).toBeVisible()
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Reactivate tenant', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Reactivate tenant', exact: true }).click()
+  await page.getByRole('dialog').getByLabel('Reason').fill('Workspace review completed.')
+  await page.getByRole('dialog').getByRole('button', { name: 'Reactivate tenant', exact: true }).click()
+  await owner.goto('/merchant/dashboard')
+  await expect(owner.getByRole('heading', { name: 'Your store at a glance.' })).toBeVisible()
+  await page.goto('/admin/audit')
+  await expect(page.getByText('Workspace review completed.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Workspace review requested by platform operations.', { exact: true })).toBeVisible()
+})
+
+test('plan changes preview affected tenants, preserve fixed Free connection limit, persist and write action history', async ({ page }) => {
+  await admin(page, '/admin/plans')
+  await page.getByRole('button', { name: 'Edit Free plan' }).click()
+  await expect(page.getByLabel('Shop connections', { exact: true })).toHaveAttribute('readonly', '')
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await page.getByRole('button', { name: 'Edit Pro plan' }).click()
+  await page.getByLabel('SKU limit', { exact: true }).fill('500')
+  await expect(page.getByText('4 tenants affected · 2 would exceed limits')).toBeVisible()
+  await page.getByLabel('Reason', { exact: true }).fill('Review sample quota impact.')
+  await page.getByRole('button', { name: 'Save plan', exact: true }).click()
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+  await page.reload()
+  await page.getByRole('button', { name: 'Edit Pro plan' }).click()
+  await expect(page.getByLabel('SKU limit', { exact: true })).toHaveValue('500')
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await page.goto('/admin/tenants/tenant-06')
+  await expect(page.getByText('Usage exceeds the current plan limits')).toBeVisible()
+  await page.goto('/admin/audit')
+  await expect(page.getByRole('region', { name: 'Admin actions' }).getByText('Plan updated', { exact: true })).toBeVisible()
+  const download = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Export log' }).click()
+  expect((await download).suggestedFilename()).toBe('smartomni-admin-actions-demo.csv')
+})
+
+test('guests and merchant roles cannot open admin pages or load admin fixtures', async ({ page }) => {
+  await page.goto('/admin/plans')
+  await expect(page).toHaveURL(/\/auth\/login$/)
+  const requested = []
+  page.on('request', request => requested.push(request.url()))
+  await page.getByLabel('Email address').fill('staff@smartomni.demo')
+  await page.getByLabel('Password', { exact: true }).fill('Demo@123')
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click()
+  await page.goto('/admin/tenants')
+  await expect(page).toHaveURL(/\/merchant\/dashboard$/)
+  await expect(page.getByRole('heading', { name: 'Your workspace is waiting.' })).toBeVisible()
+  expect(requested.some(url => /platformFixtures|AdminConsole/.test(url))).toBe(false)
+})
+
+for (const width of [375, 768, 1024, 1440]) {
+  test(`admin pages and dialogs fit at ${width}px`, async ({ page }) => {
+    const errors = []
+    page.on('pageerror', error => errors.push(error.message))
+    await page.setViewportSize({ width, height: 900 })
+    await admin(page)
+    for (const [path, heading] of [['/admin', 'Platform overview'], ['/admin/tenants', 'Tenants'], ['/admin/tenants/demo-tenant', 'Everyday Studio'], ['/admin/plans', 'Plans & limits'], ['/admin/audit', 'Action log']]) {
+      await page.goto(path)
+      await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible()
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+      if ([375, 1440].includes(width)) await page.screenshot({ path: `artifacts/platform/${path.split('/').at(-1) || 'overview'}-${width}.png`, fullPage: true })
+    }
+    await page.goto('/admin/plans')
+    await page.getByRole('button', { name: 'Edit Pro plan' }).click()
+    const dialog = await page.getByRole('dialog').boundingBox()
+    expect(dialog.x).toBeGreaterThanOrEqual(0)
+    expect(dialog.x + dialog.width).toBeLessThanOrEqual(width)
+    expect(errors).toEqual([])
+  })
+}

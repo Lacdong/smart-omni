@@ -8,9 +8,23 @@ Mở `/auth/login`, nhập email của role giả định bên dưới và mật
 
 - Tenant Owner: `owner@smartomni.demo` → `/merchant/dashboard`. Tenant mẫu đã hoàn tất onboarding; xem số liệu, đổi kỳ, lọc và xem chi tiết đơn, xuất báo cáo CSV.
 - Tenant Staff: `staff@smartomni.demo` → dashboard khóa vì chưa có lời mời/membership ACTIVE. Chỉ mở Notifications, Your profile và Sign out; không tải dữ liệu dashboard Owner.
-- Super Admin: `admin@smartomni.demo` → `/admin`, màn xác nhận quyền demo. Dashboard quản trị chưa triển khai.
+- Super Admin: `admin@smartomni.demo` → `/admin`, dashboard quản trị nền tảng, danh sách/chi tiết tenant, khóa/mở khóa, quản lý gói và lịch sử thao tác.
 
 Phiên demo chỉ lưu ID fixture trong `sessionStorage`, duy trì khi reload và xóa khi đăng xuất. Không lưu mật khẩu hoặc tạo token thật. Route guard chỉ phục vụ bản demo frontend, không thay thế xác thực/phân quyền backend. Tài khoản mẫu ở `src/features/auth/data/demoAccounts.js`; dữ liệu Owner ở `src/features/portal/data/ownerDashboard.js`.
+
+## Super Admin — prototype
+
+- `/admin`: tổng quan từ 8 tenant mẫu, trạng thái, số shop, phân bổ gói và những workspace cần xem lại.
+- `/admin/tenants`: tìm theo tên, owner, email, domain; lọc trạng thái/gói. Bộ lọc lưu trong URL. Màn hẹp hiển thị danh sách gọn.
+- `/admin/tenants/:tenantId`: thông tin tenant, mức sử dụng, shop, lịch sử thao tác; khóa/mở khóa cần xác nhận và lý do. Tenant đang onboarding không có thao tác đổi quyền này.
+- `/admin/plans`: sửa mô tả/hạn mức SKU, shop, Staff; xem trước tenant bị ảnh hưởng và tenant sẽ vượt hạn mức. Free luôn giữ một shop connection. Hạn mức còn lại chỉ là dữ liệu minh họa, chưa phải quy tắc kinh doanh đã chốt. Giảm hạn mức giữ nguyên dữ liệu và hiển thị cảnh báo vượt quota, không xóa dữ liệu hoặc thu phí.
+- `/admin/audit`: tìm/lọc lịch sử theo actor, hành động, đối tượng, lý do; xuất kết quả đang lọc ra CSV.
+
+Dữ liệu Super Admin nằm ở `src/features/platform/`, được lưu trong `localStorage` tại `smartomni.platform-demo.v1`, giữ sau reload/đăng xuất và đồng bộ thay đổi giữa các tab. Xóa key này rồi reload để quay về fixture ban đầu. Không lưu mật khẩu tại đây.
+
+Để kiểm thử khóa tenant: đăng nhập Admin, mở Everyday Studio và **Suspend tenant**, nhập lý do. Đăng nhập Owner ở tab khác: dashboard bị chặn; nếu tab Owner đã mở, trạng thái cập nhật ngay. Admin **Reactivate tenant** sẽ mở lại quyền. Profile, Notifications và Sign out vẫn khả dụng khi tenant bị khóa. Admin không thể vào Merchant bằng role nền tảng; Owner/Staff không tải các màn/fixture Admin.
+
+Nhật ký là dữ liệu trình duyệt có thể chỉnh/xóa, không phải audit bảo mật phía server. Advanced monitoring, RLS/security console, support, AI model history và billing chưa triển khai. Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
 
 ## Cấu trúc thư mục hiện tại
 
