@@ -1,13 +1,18 @@
 import { useId, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { Info } from 'lucide-react'
 import { Button } from '@/shared/ui/button'
 import { PasswordField } from './PasswordField'
 import { GoogleContinue } from './GoogleContinue'
 import { validateField } from '../lib/validation'
+import { signInDemo } from '../lib/demoSession'
+import { useDemoSession } from '../hooks/useDemoSession'
 import styles from './AuthForm.module.css'
 
 export function AuthForm() {
   const id = useId()
+  const session = useDemoSession()
+  const navigate = useNavigate()
   const [values, setValues] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [touched, setTouched] = useState({})
@@ -38,8 +43,17 @@ export function AuthForm() {
       event.currentTarget.elements.namedItem(invalidField)?.focus()
       return
     }
-    setNotice('Sign-in is not connected yet. You have not been signed in. Your credentials have not been sent or saved.')
+    const result = signInDemo(values.email, values.password)
+    if (result.error) {
+      setNotice(result.error)
+      return
+    }
+    setValues({ email: '', password: '' })
+    setNotice(`Signed in as ${result.account.roleLabel}. This is a local demo session.`)
+    navigate(result.account.role === 'SUPER_ADMIN' ? '/admin' : '/merchant/dashboard', { replace: true })
   }
+
+  if (session) return <Navigate to={session.role === 'SUPER_ADMIN' ? '/admin' : '/merchant/dashboard'} replace />
 
   return <div className={styles.container}>
     <div className={styles.intro}>
@@ -69,3 +83,4 @@ export function AuthForm() {
     </form>
   </div>
 }
+

@@ -55,3 +55,32 @@ a { color: inherit; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
   [data-gradient-rim] { animation: none; }
 }
+* { --scrollbar-thumb: transparent; }
+*:hover { --scrollbar-thumb: color-mix(in srgb, var(--color-foreground) 16%, transparent); }
+.is-scrolling { --scrollbar-thumb: color-mix(in srgb, var(--color-foreground) 28%, transparent); }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--color-foreground) 40%, transparent); }
+
+/* Firefox. ⚠️ PHẢI nằm trong @supports: từ Chrome 121, phần tử có
+   scrollbar-width/scrollbar-color là Chrome BỎ QUA toàn bộ ::-webkit-scrollbar
+   và vẽ thanh "thin" gốc ~8-11px chiếm chỗ. Để trần thì bản 4px ở trên chỉ còn
+   chạy trên Safari. */
+@supports not selector(::-webkit-scrollbar) {
+  * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+  *:hover { scrollbar-color: color-mix(in srgb, var(--color-foreground) 18%, transparent) transparent; }
+  .is-scrolling { scrollbar-color: color-mix(in srgb, var(--color-foreground) 28%, transparent) transparent; }
+}
+/* ===================================================== */
+
+/* Ẩn HẲN, không bao giờ hiện: chỉ cho hàng chip / tab cuộn ngang, nơi thanh
+   cuộn dưới đáy hàng trông như lỗi. Máy có chuột thì hàng đó phải có nút mũi
+   tên hai đầu (responsive.md, sau R10). Vùng cuộn dọc (sidebar, danh sách, modal)
+   thì KHÔNG dùng, để thanh tự ẩn ở trên lo. */
+.scrollbar-clean {
+  scrollbar-width: none;
+}
+.scrollbar-clean::-webkit-scrollbar {
+  display: none;
+}

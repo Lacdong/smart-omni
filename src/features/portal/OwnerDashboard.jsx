@@ -1,0 +1,47 @@
+import { useState } from 'react'
+import { ArrowDownToLine, ArrowUpRight, Boxes, CalendarDays, CircleAlert, Package, ShoppingBag, Wallet } from 'lucide-react'
+import { Button } from '@/shared/ui/button'
+import { MarketplaceLogo } from '@/shared/components/MarketplaceLogo'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/shared/ui/dialog'
+import { activity, channels, money, orders, stockAlerts, weeklyOrders, weeklySales } from './data/ownerDashboard'
+import styles from './PortalPage.module.css'
+
+export default function OwnerDashboard({ session }) {
+  const [period, setPeriod] = useState('week')
+  const [filter, setFilter] = useState('All orders')
+  const [detail, setDetail] = useState(null)
+  const [notice, setNotice] = useState('')
+  const daily = period === 'today'
+  const orderCount = daily ? weeklyOrders.at(-1) : weeklyOrders.reduce((a, b) => a + b, 0)
+  const sales = daily ? weeklySales.at(-1) : weeklySales.reduce((a, b) => a + b, 0)
+  const filtered = orders.filter(order => filter === 'All orders' || order.status === filter)
+  function exportReport() {
+    const rows = [['Metric', 'Value', 'Period', 'Source'], ['Sales', sales, period, 'demo'], ['Orders', orderCount, period, 'demo'], ['To pack', 9, period, 'demo'], ['Low-stock SKUs', stockAlerts.length, period, 'demo']]
+    const url = URL.createObjectURL(new Blob([rows.map(row => row.join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8;' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `smartomni-demo-${period}.csv`
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    setNotice('Demo report exported.')
+  }
+  return <>
+    <div className={styles.headingRow}><div className={styles.pageHeading}><p>EVERYDAY STUDIO / TENANT OWNER</p><h1>Your store at a glance.</h1><span>Welcome back, {session.name.split(' ')[0]}. Here’s how things are looking.</span></div><Button variant="outline" className={styles.outline} onClick={exportReport}><ArrowDownToLine size={16} aria-hidden="true" />Export report</Button></div>
+    <div className={styles.periodBar}><div className={styles.periodTabs} role="group" aria-label="Reporting period"><button aria-pressed={!daily} onClick={() => setPeriod('week')}>Last 7 days</button><button aria-pressed={daily} onClick={() => setPeriod('today')}>Today</button></div><span><CalendarDays size={15} aria-hidden="true" />{daily ? '23 Oct 2026' : '17 – 23 Oct 2026'}<span className={styles.timezone}> · GMT+7</span></span></div>
+    <div className={styles.stats}>
+      {[[Wallet, 'Sales · demo estimate', money(sales), 'Illustrative value, before fees'], [ShoppingBag, 'Orders received', orderCount, daily ? 'Across 2 sales channels today' : 'Across 2 sales channels this week'], [Package, 'Orders to pack', 9, 'Current queue · 2 shown below'], [Boxes, 'Low-stock SKUs', stockAlerts.length, 'Current stock · 1 out of stock']].map(([Icon, label, value, caption]) => <div key={label}><div className={styles.statLabel}>{label}<Icon size={17} aria-hidden="true" /></div><strong>{value}</strong><span>{caption}</span></div>)}
+    </div>
+    <div className={styles.dashboardGrid}>
+      <section className={styles.panel}><div className={styles.panelHeading}><div><h2>Order activity</h2><p>Orders received each day · 17–23 Oct</p></div><span className={styles.smallTag}>{weeklyOrders.reduce((a, b) => a + b, 0)} total</span></div><div className={styles.chart} role="img" aria-label={`Orders received from 17 to 23 October: ${weeklyOrders.join(', ')}. Total 164.`}>{weeklyOrders.map((count, index) => <div key={index} className={styles.chartColumn}><span>{count}</span><div className={`${styles.bar} ${index === 6 ? styles.currentBar : ''}`} style={{ height: `${count / 32 * 156}px` }} /><span>{17 + index} Oct</span></div>)}</div><div className={styles.chartFoot}><span><i />Orders received</span><span>Daily volume · sample data</span></div></section>
+      <section className={styles.panel} id="channels"><div className={styles.panelHeading}><div><h2>Sales channels</h2><p>Your connected shops</p></div><span className={styles.smallTag}>2 shops</span></div><div className={styles.channelList}>{channels.map((channel, index) => <div key={channel.name}><div className={styles.channelTop}><MarketplaceLogo marketplace={channel.name === 'Shopee' ? 'shopee' : 'tiktok'} size={32} decorative /><div><strong>{channel.name}</strong><p>{channel.shop}</p></div><span className={index ? styles.warning : styles.success}>{channel.state}</span></div><div className={styles.channelMeta}><span>{daily ? (index ? 11 : 15) : (index ? 68 : 96)} orders</span><span>Last sync {channel.synced}</span></div>{index === 1 && <Button variant="link" className={styles.textAction} onClick={() => setDetail({ title: 'TikTok Shop connection', description: 'This demo shop needs authorization to resume syncing. Existing data was last synced at 09:15. No marketplace connection is made in this preview.' })}>Review connection<ArrowUpRight size={14} aria-hidden="true" /></Button>}</div>)}</div></section>
+      <section className={`${styles.panel} ${styles.ordersPanel}`} id="orders"><div className={styles.panelHeading}><div><h2>Recent orders</h2><p>The 5 latest orders across your shops today</p></div><label className={styles.selectLabel}><span className="sr-only">Filter orders</span><select value={filter} onChange={event => setFilter(event.target.value)}>{['All orders', 'To pack', 'Shipping', 'Delivered', 'Cancelled'].map(status => <option key={status}>{status}</option>)}</select></label></div><div className={styles.tableScroll} tabIndex={0} aria-label="Recent orders table"><table><thead><tr><th>Order / customer</th><th>Channel</th><th>Total</th><th>Status</th><th>Time</th></tr></thead><tbody>{filtered.map(order => <tr key={order.id}><td><button className={styles.orderLink} onClick={() => setDetail({ title: order.id, description: `${order.customer} · ${order.channel} · ${order.time}`, order })}>{order.id}</button><span className={styles.customer}>{order.customer}</span><span className={styles.mobileOrderMeta}>{order.channel} · {order.time}</span></td><td><span className={styles.orderChannel}><MarketplaceLogo marketplace={order.channel === 'Shopee' ? 'shopee' : 'tiktok'} size={20} decorative />{order.channel}</span></td><td className={styles.amount}>{money(order.total)}</td><td><span className={order.status === 'To pack' ? styles.warning : order.status === 'Delivered' ? styles.success : styles.neutral}>{order.status}</span></td><td className={styles.muted}>{order.time}</td></tr>)}</tbody></table></div><div className={styles.tableFoot}>Showing {filtered.length} of 5 recent orders · Read-only demo</div></section>
+      <section className={styles.panel} id="inventory"><div className={styles.panelHeading}><div><h2>Inventory needs attention</h2><p>Current available stock</p></div><CircleAlert size={18} className={styles.attentionIcon} aria-hidden="true" /></div><div className={styles.inventoryList}>{stockAlerts.map(item => <button key={item.sku} onClick={() => setDetail({ title: item.name, description: `SKU ${item.sku} · ${item.available} available · Low-stock threshold: ${item.threshold}. This is a read-only inventory preview.` })}><div><strong>{item.name}</strong><span>{item.sku}</span></div><span className={styles.stockCount}>{item.available === 0 ? 'Out of stock' : `${item.available} left`}</span></button>)}</div><p className={styles.panelNote}>Stock values are demo snapshots.</p></section>
+      <section className={styles.panel}><div className={styles.panelHeading}><div><h2>Fulfillment snapshot</h2><p>Current open queue and weekly deliveries</p></div></div><div className={styles.fulfillment}>{[['To pack', 9], ['Shipping', 37], ['Delivered this week', 118]].map(([label, count]) => <div key={label}><div><span>{label}</span><strong>{count}</strong></div><div className={styles.track}><span style={{ width: `${count / 164 * 100}%` }} /></div></div>)}</div></section>
+      <section className={styles.panel}><div className={styles.panelHeading}><div><h2>Recent activity</h2><p>Updates from your workspace today</p></div></div><div className={styles.activity}>{activity.map(item => <div key={item.target}><span className={styles.activityAvatar}>{item.initials}</span><div><p><strong>{item.person}</strong> {item.action} <a href={`#${item.section}`}>{item.target}</a></p><span>Everyday Studio · {item.time}</span></div></div>)}</div></section>
+    </div>
+    <footer className={styles.dashboardFoot}><span>Demo data · Snapshot: 23 Oct 2026, 10:45 GMT+7</span><span role="status">{notice || 'No live marketplace data'}</span></footer>
+    <Dialog open={Boolean(detail)} onOpenChange={open => { if (!open) setDetail(null) }}><DialogContent><DialogTitle>{detail?.title}</DialogTitle><DialogDescription>{detail?.description}</DialogDescription>{detail?.order && <dl className={styles.orderDetail}><dt>Product</dt><dd>{detail.order.product}</dd><dt>Total</dt><dd>{money(detail.order.total)}</dd><dt>Status</dt><dd>{detail.order.status}</dd></dl>}<p className={styles.muted}>Preview only. No changes are sent to a marketplace.</p></DialogContent></Dialog>
+  </>
+}
+
+

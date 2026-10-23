@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 const modes = [
-  { path: '/auth/login', heading: 'Welcome back.', action: 'Sign in', autocomplete: 'current-password', notice: 'You have not been signed in.' },
+  { path: '/auth/login', heading: 'Welcome back.', action: 'Sign in', autocomplete: 'current-password', notice: 'Demo email or password is incorrect.' },
 ]
 
 for (const mode of modes) {
@@ -45,7 +45,6 @@ for (const mode of modes) {
     await password.focus()
     await page.keyboard.press('Enter')
     await expect(page.getByRole('status')).toContainText(mode.notice)
-    await expect(page.getByRole('status')).toContainText('Your credentials have not been sent or saved.')
     await expect(page).toHaveURL(new RegExp(`${mode.path}$`))
     expect(credentialRequests).toEqual([])
     const storage = await page.evaluate(() => ({ local: { ...localStorage }, session: { ...sessionStorage }, cookies: document.cookie }))

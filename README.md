@@ -1,6 +1,16 @@
 # SmartOmni — Frontend
 
-SmartOmni hiện có public Landing Page và hai trang placeholder cho đăng nhập/đăng ký. Frontend dùng **React + JavaScript/JSX + Vite**; chưa có Merchant Portal, backend hoặc API contract đã chốt. Dashboard trên Landing Page là **marketing preview** dùng mock data, không phải dữ liệu marketplace thật.
+SmartOmni có Landing Page, Storefront, luồng đăng ký/onboarding và đăng nhập demo theo role. Merchant Portal hiện có dashboard Tenant Owner và trang khóa cho Tenant Staff chưa nhận lời mời. Frontend dùng **React + JavaScript/JSX + Vite**; chưa kết nối backend. Dữ liệu dashboard và marketplace đều là mock data.
+
+## Đăng nhập demo
+
+Mở `/auth/login`, nhập email của role giả định bên dưới và mật khẩu rồi bấm **Sign in**. Thông tin tài khoản demo chỉ được ghi tại đây; trang đăng nhập không hiển thị phần chọn role. Mật khẩu chung: `Demo@123`.
+
+- Tenant Owner: `owner@smartomni.demo` → `/merchant/dashboard`. Tenant mẫu đã hoàn tất onboarding; xem số liệu, đổi kỳ, lọc và xem chi tiết đơn, xuất báo cáo CSV.
+- Tenant Staff: `staff@smartomni.demo` → dashboard khóa vì chưa có lời mời/membership ACTIVE. Chỉ mở Notifications, Your profile và Sign out; không tải dữ liệu dashboard Owner.
+- Super Admin: `admin@smartomni.demo` → `/admin`, màn xác nhận quyền demo. Dashboard quản trị chưa triển khai.
+
+Phiên demo chỉ lưu ID fixture trong `sessionStorage`, duy trì khi reload và xóa khi đăng xuất. Không lưu mật khẩu hoặc tạo token thật. Route guard chỉ phục vụ bản demo frontend, không thay thế xác thực/phân quyền backend. Tài khoản mẫu ở `src/features/auth/data/demoAccounts.js`; dữ liệu Owner ở `src/features/portal/data/ownerDashboard.js`.
 
 ## Cấu trúc thư mục hiện tại
 
@@ -110,3 +120,4 @@ npm run test:e2e
 ```
 
 Dev server chạy tại `http://127.0.0.1:5174/`. Playwright cần cài browser một lần bằng `npx playwright install chromium` trước khi chạy end-to-end tests trên máy mới.
+
