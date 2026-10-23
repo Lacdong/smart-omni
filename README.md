@@ -39,7 +39,7 @@ Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ th
 
 Repo có `vercel.json` cho Vite: build bằng `npm run build`, output `dist`, rewrite các route SPA về `/index.html` để mở trực tiếp hoặc reload `/auth/login`, `/admin`, `/merchant/dashboard` không bị 404.
 
-Trong Vercel Project Settings, kiểm tra Git repository là `Lacdong/smart-omni`, Production Branch là `main`, Root Directory là thư mục chứa `package.json` (repo này là root). Kiểm tra deployment gắn với domain production thực sự dùng commit mới đã push. Push Git thành công không chứng minh deployment đã build thành công hoặc production domain đã trỏ sang deployment đó.
+Trong Vercel Project Settings, kiểm tra Git repository là `Smart-Omni/SmartOmni_FE` (địa chỉ cũ `Lacdong/smart-omni` hiện chuyển hướng sang repo này), Production Branch là `main`, Root Directory là thư mục chứa `package.json` (repo này là root). Kiểm tra deployment gắn với domain production thực sự dùng commit mới đã push. Push Git thành công không chứng minh deployment đã build thành công hoặc production domain đã trỏ sang deployment đó.
 
 Nếu bấm Sign in còn hiện `Sign-in is not connected yet`, domain đang phục vụ bản đăng nhập placeholder cũ. Deploy commit mới từ đúng repo/branch, kiểm tra Build Logs/Source và trạng thái Ready; nếu dùng Redeploy, chọn deployment có đúng commit mới, không dựng lại một deployment cũ. Khi cần kiểm tra build sạch, tắt lựa chọn dùng lại Build Cache. Bản demo không cần biến môi trường hoặc backend để đăng nhập.
 
@@ -151,4 +151,3 @@ npm run test:e2e
 ```
 
 Dev server chạy tại `http://127.0.0.1:5174/`. Playwright cần cài browser một lần bằng `npx playwright install chromium` trước khi chạy end-to-end tests trên máy mới.
-
