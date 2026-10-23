@@ -138,10 +138,10 @@
 .shopRows > div > div { flex: 1; min-width: 0; }
 .shopRows strong { font-size: 13px; font-weight: 500; }
 .shopRows div > span:not([class]) { display: block; margin-top: 6px; color: #666; font-size: 12px; }
-.dangerOutline { min-height: 40px; border: 0; border-radius: 12px; color: #be123c; background: #fff1f2; box-shadow: none; }
-.dangerOutline:hover { background: #ffe4e6; color: #be123c; }
-.dangerButton { color: white; background: #be123c; }
-.dangerButton:hover { background: #9f1239; }
+.dangerOutline { min-height: 40px; border: 1px solid #d4d4d4; border-radius: 12px; color: #171717; background: #fff; box-shadow: none; }
+.dangerOutline:hover { background: #171717; color: #fff; }
+.dangerButton { color: #fff; background: #171717; }
+.dangerButton:hover { background: #333; }
 .modal { max-height: calc(100svh - 48px); overflow-y: auto; }
 .modal form { min-width: 0; }
 .modal h2 { padding-right: 16px; line-height: 1.5; }

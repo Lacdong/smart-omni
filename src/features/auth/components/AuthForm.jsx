@@ -73,7 +73,7 @@ export function AuthForm() {
       <PasswordField id={`${id}-password`} value={values.password} onChange={change} onBlur={blur}
         error={errors.password} autoComplete="current-password" />
       <div className={styles.actions}>
-        <Button type="button" variant="link" size="sm" className={styles.forgot} onClick={() => setNotice('Password recovery is not connected yet. No reset email has been sent.')}>Forgot password?</Button>
+        <Button type="button" variant="link" size="sm" className={styles.forgot} onClick={() => navigate('/auth/reset-password')}>Forgot password?</Button>
         <Button type="submit" className={styles.submit}>Sign in</Button>
       </div>
       <GoogleContinue onContinue={() => setNotice('Google sign-in is not connected yet. You have not been signed in.')} />

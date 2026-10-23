@@ -1,5 +1,7 @@
 import { useMemo, useSyncExternalStore } from 'react'
 import { recordOwnerSettingActivity } from './ownerAudit'
+import { assignedStaffEmail, assignedStaffMember, staffPermissions } from '@/features/auth/data/staffAccess'
+export { staffPermissions } from '@/features/auth/data/staffAccess'
 
 export const settingsKey = 'smartomni.store-settings-demo.v1'
 export const teamKey = 'smartomni.team-demo.v1'
@@ -10,7 +12,6 @@ export const defaultSettings = {
   policies: { shipping: '', returns: '', privacy: '' },
 }
 const accents = ['neutral', 'forest', 'navy']
-export const staffPermissions = [{ id: 'orders:read', label: 'View orders' }, { id: 'inventory:read', label: 'View inventory alerts' }]
 
 function raw(key) { try { return localStorage.getItem(key) || '' } catch { return '' } }
 function decode(value, fallback) { try { return JSON.parse(value) ?? fallback } catch { return fallback } }
@@ -67,9 +68,17 @@ export function saveStoreSection(section, values) {
   if (section === 'profile' && next.profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(next.profile.email)) throw new Error('Enter a valid contact email.')
   write(settingsKey, next)
 }
-export function readStaffMembership() {
+export function readStaffMembership(email = 'staff@smartomni.demo') {
   const team = decode(raw(teamKey), [])
-  return Array.isArray(team) ? team.find(member => member.email === 'staff@smartomni.demo' && member.status !== 'REVOKED') : undefined
+  return Array.isArray(team) ? team.find(member => member.email === email && member.status !== 'REVOKED') : undefined
+}
+export function initializeAssignedStaff() {
+  const marker = 'smartomni.assigned-staff-seeded.v1'
+  if (localStorage.getItem(marker)) return
+  const team = readTeam()
+  // Explicit fixture initialization on first sign-in only. Deleted/suspended memberships are never recreated by subsequent sign-ins.
+  if (!team.some(member => member.email === assignedStaffEmail)) write(teamKey, [...team, structuredClone(assignedStaffMember)])
+  localStorage.setItem(marker, 'true')
 }
 function readTeam() {
   const value = decode(raw(teamKey), [])
@@ -135,10 +144,12 @@ export function deleteStaff(id, expectedRevision) {
   write(teamKey, team.filter(item => item.id !== id))
 }
 export function acceptStaffInvitation(id) {
-  if (sessionStorage.getItem('smartomni.demo-session') !== 'demo-staff') throw new Error('Sign in as the invited demo staff account.')
+  if (!['demo-staff', 'demo-active-staff'].includes(sessionStorage.getItem('smartomni.demo-session'))) throw new Error('Sign in as the invited demo staff account.')
   requireActiveTenant()
   const team = readTeam()
-  const invitation = team.find(item => item.id === id && item.email === 'staff@smartomni.demo' && item.status === 'INVITED')
+  const activeAccount = sessionStorage.getItem('smartomni.demo-session')
+  const email = activeAccount === 'demo-active-staff' ? assignedStaffEmail : 'staff@smartomni.demo'
+  const invitation = team.find(item => item.id === id && item.email === email && item.status === 'INVITED')
   if (!invitation) throw new Error('This invitation is no longer available.')
   const now = new Date().toISOString()
   write(teamKey, team.map(item => item.id === id ? { ...item, status: 'ACTIVE', acceptedAt: now, updatedAt: now } : item))

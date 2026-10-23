@@ -7,13 +7,13 @@
   --color-primary-foreground: #fff;
   --color-action: #171717;
   --color-action-hover: #333333;
-  --color-action-soft: #eef2ff;
-  --color-action-soft-hover: #e0e7ff;
-  --color-action-soft-foreground: #3730a3;
-  --color-action-border: #c7d2fe;
-  --color-secondary: #e2e8f0;
-  --color-secondary-foreground: #334155;
-  --color-secondary-hover: #cbd5e1;
+  --color-action-soft: #fff;
+  --color-action-soft-hover: #f0f0f0;
+  --color-action-soft-foreground: #171717;
+  --color-action-border: #d4d4d4;
+  --color-secondary: #f0f0f0;
+  --color-secondary-foreground: #171717;
+  --color-secondary-hover: #e5e5e5;
   --color-danger-soft: #fff1f2;
   --color-danger-soft-hover: #ffe4e6;
   --color-muted: #f5f5f5;
@@ -40,8 +40,8 @@ body { margin: 0; min-width: 320px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
 a { color: inherit; }
-::selection { background: #dbdcff; }
-:focus-visible { outline: 3px solid #6a6cf6; outline-offset: 4px; }
+::selection { background: #dedede; }
+:focus-visible { outline: 2px solid #171717; outline-offset: 3px; }
 
 /* Shared motion for gradient rims; animate the paint, keeping content still. */
 @property --gradient-rim-angle {

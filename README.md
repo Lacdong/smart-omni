@@ -10,9 +10,44 @@ Mở `/auth/login`, nhập email của role giả định bên dưới và mật
 
 - Tenant Owner: `owner@smartomni.demo` → `/merchant/dashboard`. Tenant mẫu đã hoàn tất onboarding; xem số liệu, đổi kỳ, lọc và xem chi tiết đơn, xuất báo cáo CSV.
 - Tenant Staff: `staff@smartomni.demo` → dashboard khóa trước ACTIVE membership; nhận lời mời demo tại Notifications để mở các phần được Owner cấp quyền đọc. Không mở dashboard tài chính hoặc thiết lập của Owner.
+- Tenant Staff đã được gắn tenant: `staff.active@smartomni.demo` / `Demo@123` → workspace hoạt động của Sam Nguyen, tenant `demo-tenant`, domain mẫu `everyday-studio`. Lần đăng nhập đầu nạp membership ACTIVE vào Team của Owner với các quyền Staff operations. Tài khoản chờ mời ở trên giữ nguyên để kiểm tra pending flow.
 - Super Admin: `admin@smartomni.demo` → `/admin`, dashboard quản trị nền tảng, danh sách/chi tiết tenant, khóa/mở khóa, quản lý gói và lịch sử thao tác.
 
 Phiên demo chỉ lưu ID fixture trong `sessionStorage`, duy trì khi reload và xóa khi đăng xuất. Không lưu mật khẩu hoặc tạo token thật. Route guard chỉ phục vụ bản demo frontend, không thay thế xác thực/phân quyền backend. Tài khoản mẫu ở `src/features/auth/data/demoAccounts.js`; dữ liệu Owner ở `src/features/portal/data/ownerDashboard.js`.
+
+## Staff — mock tenant/subdomain & 23 use cases
+
+Đăng xuất tài khoản đang dùng, đăng nhập `staff.active@smartomni.demo`, mật khẩu `Demo@123`. Workspace hiển thị **Assigned demo subdomain: everyday-studio**, tenant ID `demo-tenant`. Đây là quan hệ User–Membership–Tenant trong fixture, không phải cấp DNS/subdomain thật. Ví dụ URL kiểm tra binding: `/merchant/staff/orders?tenant=everyday-studio`; đổi `tenant` thành domain khác sẽ chặn dữ liệu và mutation. Staff không có multi-tenant switching.
+
+Tài khoản Sam Nguyen được seed một lần vào `smartomni.team-demo.v1` khi đăng nhập đầu tiên; Owner thấy Sam trong Team và sửa quyền/tạm khóa/xóa như staff khác. Marker `smartomni.assigned-staff-seeded.v1` ngăn đăng nhập tự tạo lại staff đã bị Owner xóa/thu hồi. Xóa Team key một mình không reset marker; nếu muốn nạp lại toàn bộ fixture, xóa cả hai key. Đăng nhập Owner hoặc tài khoản Staff pending không tự tạo Sam.
+
+- **2.1 Login/Logout**: fixture credential, duy trì session khi reload, đăng xuất xóa session; chỉ ACTIVE membership của tenant đang hoạt động vào được workspace.
+- **2.2 Reset password**: Forgot password mở `/auth/reset-password`, nhập email Staff, tạo và mở link reset demo dùng một lần, nhập/xác nhận mật khẩu mới rồi đăng nhập bằng mật khẩu đó trong cùng SPA session. Link hết hạn sau 10 phút hoặc reload; reload cũng phục hồi mật khẩu fixture `Demo@123`. Không gửi email; không ghi password vào local/session storage, URL hoặc log. Reset không cấp lại membership/quyền đã bị khóa. Không reset Owner/Admin.
+- **2.3 View product import result**: `/merchant/staff/imports` chọn job, xem QUEUED/RUNNING/COMPLETED/PARTIAL/FAILED và kết quả từng source row.
+- **2.4 View price history**: `/merchant/staff/prices` mở lịch sử giá trước/sau, thời điểm và nguồn snapshot cho từng variant; có trạng thái không có history.
+- **2.5 Edit internal product details**: `/merchant/staff/products` sửa tên, category, notes nội bộ; giữ SKU identity và dữ liệu listing/giá sàn riêng. Kiểm tra quyền và bản sửa cũ, có Cancel.
+- **2.6 Import products from marketplace**: chọn sàn/source rows → preview → Queue → Start demo import → Complete demo import. Tạo sản phẩm/tồn 0 cho SKU mới, skip SKU trùng, fail seller SKU thiếu; shop chưa được Owner authorize sẽ chặn import. Không tự ghi đè sản phẩm hay tự map warehouse.
+- **2.7 View price discrepancy alerts**: tab Price discrepancy alerts so giá cơ bản cùng SKU giữa các sàn, ghi rõ chênh lệch và tách promotion để tránh trình bày như lỗi giá live.
+- **2.8 View inventory**: `/merchant/staff/inventory` lọc SKU/tên và kho; on-hand, reserved và available theo từng SKU/kho, available = on-hand − reserved.
+- **2.9 Adjust inventory**: thay đổi số lượng +/- nguyên, bắt buộc lý do; không cho âm hoặc dưới lượng reserved, kiểm tra snapshot cũ trước khi lưu; ghi stock ledger và queue sync liên quan.
+- **2.10 View marketplace prices and promotions**: xem giá cơ bản, giá promotion, tên và thời hạn promotion trong snapshot 23/10/2026. Không coi giá snapshot là giá thời gian thực.
+- **2.11 Record incoming stock**: nhập số lượng dương và receipt reference; cộng kho đúng một lần theo request ID, ghi before/after, giữ nguyên reserved, queue sync liên quan.
+- **2.12 Map SKU to marketplace product**: `/merchant/staff/mapping` map một marketplace variant tới internal SKU và warehouse có inventory record.
+- **2.13 Correct incorrect SKU mapping**: sửa SKU/kho với lý do; sample expected SKU giúp kiểm tra scenario; không che sync error cũ trước khi retry.
+- **2.14 View shipment status**: `/merchant/staff/orders` hiện trạng thái đơn, shipment và tracking; gồm sample chưa arrange, pending pickup, in transit và delivered.
+- **2.15 Arrange shipment**: chỉ READY_TO_SHIP, kiểm tra reservation/SKU/kho và snapshot đơn; chọn demo service, xác nhận để tạo shipment/tracking local. Không book carrier; vẫn giữ reserved trước handover.
+- **2.16 Download/print shipping label**: sau arrange hoặc với shipment đã có, tải file HTML printable hoặc mở cửa sổ in; nhãn có chữ **DEMO · NOT VALID FOR SHIPPING**, không phải nhãn hãng vận chuyển. Kiểm tra quyền và trạng thái ở hàm tạo nhãn.
+- **2.17 Cancel order**: chỉ trước khi arrange theo rule demo, phải có lý do và xác nhận; trả reserved về available trong cùng transaction local, không cộng lại on-hand, không gửi cancellation/refund lên sàn. Chặn cancel lại hoặc cancel đơn SHIPPED/DELIVERED.
+- **2.18 View order list**: lọc trạng thái, tìm order/customer/tracking; không hiển thị dữ liệu Owner billing, lợi nhuận hoặc AI.
+- **2.19 View order details**: modal line items/SKU/quantity/unit price, tổng đơn, địa chỉ mẫu, kho, trạng thái shipment/tracking và lý do cancel nếu có.
+- **2.20 Retry inventory sync**: `/merchant/staff/sync` retry job FAILED sau khi xem nguyên nhân và sửa dependency.
+- **2.21 Sync inventory to marketplace**: queue từ Inventory hoặc tự queue sau stock change, run job QUEUED hoặc retry FAILED. Dùng available mới nhất; trạng thái/quantity/history lưu local, không gọi marketplace API. Gửi lại cả available = 0 khi hết hàng.
+- **2.22 Correct warehouse and SKU mapping**: từ chi tiết sync error dẫn thẳng listing cần sửa; xác thực kho có thật và SKU/kho có inventory record, lưu lý do và kiểm tra revision.
+- **2.23 View inventory sync errors**: xem mã lỗi, số lần, lịch sử và kiểm tra mapping hiện tại; fixture có WAREHOUSE_MAPPING_INVALID, SKU_MAPPING_INCORRECT và SKU_MAPPING_MISSING; shop mất quyền sinh SHOP_AUTH_REQUIRED.
+
+Các quyền trong `src/features/auth/data/staffAccess.js` được Owner quản lý qua Team; mỗi action có kiểm tra quyền riêng ngoài route/UI. Quyền `inventory:read` trước đây có nhãn “View inventory alerts”, nay cũng cho xem Inventory; quyền ghi vẫn tách riêng. Owner tắt quyền, suspend tenant hoặc xóa membership sẽ chặn Staff ngay và chặn gọi mutation trực tiếp trong demo. Đây là kiểm tra frontend, chưa thay thế authorization/RLS server.
+
+Sample ban đầu có 4 internal SKUs, 5 bản ghi tồn theo kho, 4 đơn, 3 sync jobs và các source rows import gồm success/duplicate/missing SKU. Shopee có connection mẫu, TikTok cần Owner reauthorize. Staff operational data lưu theo tenant trong `smartomni.staff-operations-demo.v1`; giữ sau reload và đồng bộ giữa các tab. Xóa key này reset products/imports/inventory/mapping/orders/sync về fixture, không thay membership. Không lưu password hoặc provider credentials vào đây. Source ở `src/features/staff/`, kiểm thử 23 luồng ở `tests/staff-operations.spec.js`.
 
 ## Owner — Store settings & Team (UC 3.3–3.7, frontend demo)
 
@@ -74,7 +109,7 @@ Storage cũ tự bổ sung định nghĩa tính năng và cảnh báo khi đọc
 
 Để kiểm thử khóa tenant: đăng nhập Admin, mở Everyday Studio và **Suspend tenant**, nhập lý do. Đăng nhập Owner ở tab khác: dashboard bị chặn; nếu tab Owner đã mở, trạng thái cập nhật ngay. Admin **Reactivate tenant** sẽ mở lại quyền. Profile, Notifications và Sign out vẫn khả dụng khi tenant bị khóa. Admin không thể vào Merchant bằng role nền tảng; Owner/Staff không tải các màn/fixture Admin.
 
-Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing thật (Owner đã có các màn billing demo mô tả ở trên). Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
+Reset password Staff có flow demo theo yêu cầu UC 2.2 mới; reset Owner/Admin và email/token thật vẫn chưa triển khai. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing thật (Owner đã có các màn billing demo mô tả ở trên). Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
 
 ## Deploy lên Vercel
 

@@ -10,15 +10,16 @@
 .storeIcon { display: grid; place-items: center; width: 36px; height: 36px; flex: none; background: var(--color-muted); border-radius: 12px; }
 .navLabel { padding: 0 12px; margin: 16px 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .1em; color: var(--color-muted-foreground); }
 .sidebar nav { display: grid; gap: 4px; }
-.sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; min-height: 40px; border-radius: 12px; color: #555; text-decoration: none; font-size: 13px; }
+.sidebar nav a { display: flex; align-items: center; gap: 12px; padding: 10px 12px; min-height: 44px; border-radius: 10px; color: #525252; text-decoration: none; font-size: 14px; line-height: 20px; font-weight: 500; }
+.sidebar nav a svg { flex-shrink: 0; width: 18px; height: 18px; }
 .sidebar nav a:hover { background: #f7f7f7; color: var(--color-foreground); }
-.sidebar nav a[aria-current] { background: #ededed; color: var(--color-foreground); font-weight: 550; }
+.sidebar nav a[aria-current] { background: #171717; color: #fff; }
 .navLock { margin-left: auto; }
 .sidebarBottom { margin-top: auto; padding: 32px 12px 0; }
 .sidebarBottom p { font-size: 12px; font-weight: 550; }
 .sidebarBottom p span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.6; color: var(--color-muted-foreground); font-weight: 400; }
-.sidebarBottom button { justify-content: start; margin-top: 12px; width: 100%; min-height: 40px; box-shadow: none; background: var(--color-danger-soft); color: var(--color-destructive); }
-.sidebarBottom button:hover { background: #fff1f2; color: #be123c; }
+.sidebarBottom button { justify-content: start; margin-top: 12px; width: 100%; min-height: 40px; box-shadow: none; background: #fff; color: #171717; border: 1px solid #d4d4d4; }
+.sidebarBottom button:hover { background: #171717; color: #fff; }
 .main { min-width: 0; }
 .platformMobileNav { display: none; }
 @media (max-width: 700px) { .sidebar nav:nth-of-type(3) { display: none; } }
@@ -40,7 +41,7 @@
   .tableScroll td:first-child { white-space: normal; }
   .mobileOrderMeta { display: block; margin-top: 4px; color: #666; font-size: 12px; }
 }
-.mobileLogout { display: none; background: var(--color-danger-soft); color: var(--color-destructive); }
+.mobileLogout { display: none; background: #fff; color: #171717; border: 1px solid #d4d4d4; }
 @media (max-width: 700px) { .mobileLogout { display: inline-flex; } .topbar .demoBadge { display: none; } }
 .topbar { min-height: 72px; padding: 16px 32px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--color-background); font-size: 12px; color: var(--color-muted-foreground); }
 .topbar strong { font-weight: 500; color: var(--color-foreground); }
@@ -54,7 +55,7 @@
 .pageHeading > p { margin: 0 0 12px; color: var(--color-muted-foreground); font-size: 12px; letter-spacing: .12em; font-weight: 550; }
 .pageHeading h1 { margin: 0; font-size: 24px; line-height: 1.3; letter-spacing: -.035em; font-weight: 600; }
 .pageHeading > span { display: block; margin-top: 8px; color: var(--color-muted-foreground); font-size: 13px; line-height: 1.6; text-wrap: pretty; }
-.outline { min-height: 40px; border-radius: 12px; background: var(--color-action); color: white; border-color: transparent; box-shadow: none; font-size: 12px; }
+.outline { min-height: 40px; border-radius: 12px; background: var(--color-action); color: white; border-color: transparent; box-shadow: none; font-size: 14px; }
 .outline:hover { background: var(--color-action-hover); color: white; }
 .outline:disabled { background: var(--color-muted); color: var(--color-muted-foreground); border-color: var(--color-border); }
 .periodBar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-block: 24px 16px; }

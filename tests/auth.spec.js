@@ -20,6 +20,7 @@ for (const mode of modes) {
     await expect(page.getByRole('checkbox')).toHaveCount(0)
     await page.getByRole('button', { name: 'Forgot password?', exact: true }).click()
     await expect(page.getByRole('status')).toContainText('No reset email has been sent.')
+    await page.getByRole('link', { name: 'Back to sign in', exact: true }).click()
     await expect(page.getByLabel('Email address')).not.toHaveAttribute('aria-invalid', 'true')
     await page.getByRole('button', { name: 'Continue with Google', exact: true }).click()
     await expect(page.getByRole('status')).toContainText('Google sign-in is not connected yet.')

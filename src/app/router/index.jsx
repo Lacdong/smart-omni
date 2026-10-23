@@ -18,6 +18,7 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <LandingPage /> },
       { path: '/auth/login', element: <LoginPage /> },
+      { path: '/auth/reset-password', lazy: async () => ({ Component: (await import('@/features/auth/pages/StaffResetPasswordPage')).default }) },
       { path: '/auth/register', element: <RegisterPage /> },
       { path: '/auth/register/staff', element: <StaffRegisterPage /> },
       { path: '/merchant/*', lazy: async () => ({ Component: (await import('@/features/portal/PortalPage')).PortalPage }) },
