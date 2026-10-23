@@ -1,11 +1,13 @@
-import { lazy, Suspense } from 'react'
-import { Bell, Boxes, Building2, CircleUserRound, CreditCard, LayoutDashboard, LockKeyhole, LogOut, Package, ScrollText, ShieldCheck, Store } from 'lucide-react'
+import { lazy, Suspense, useEffect } from 'react'
+import { Activity, Bell, Boxes, Building2, CircleUserRound, CreditCard, LayoutDashboard, Link2, LockKeyhole, LogOut, Package, ScrollText, ShieldCheck, Store } from 'lucide-react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { Brand } from '@/shared/components/Brand'
 import { Button } from '@/shared/ui/button'
 import { useDemoSession } from '@/features/auth/hooks/useDemoSession'
 import { signOutDemo } from '@/features/auth/lib/demoSession'
 import { useTenantAccess } from '@/features/auth/hooks/useTenantAccess'
+import { useTenantFeatures } from '@/features/auth/hooks/useTenantFeatures'
+import { recordDemoSecurityEvent } from '@/features/auth/lib/demoSecurityLog'
 import styles from './PortalPage.module.css'
 
 const OwnerDashboard = lazy(() => import('./OwnerDashboard'))
@@ -14,8 +16,12 @@ const AdminConsole = lazy(() => import('@/features/platform/AdminConsole'))
 export function PortalPage() {
   const session = useDemoSession()
   const tenantStatus = useTenantAccess(session?.tenantId)
+  const tenantFeatures = useTenantFeatures(session?.tenantId)
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  useEffect(() => {
+    if (session && ((session.role !== 'SUPER_ADMIN' && pathname.startsWith('/admin')) || (session.role === 'SUPER_ADMIN' && pathname.startsWith('/merchant')))) recordDemoSecurityEvent({ type: 'ACCESS_DENIED', severity: 'WARNING', actor: `${session.roleLabel} demo`, result: 'Blocked', message: 'The demo role is not allowed to access this portal.', resource: pathname })
+  }, [session, pathname])
   if (!session) return <Navigate to="/auth/login" replace />
   const admin = session.role === 'SUPER_ADMIN'
   if (admin && !pathname.startsWith('/admin')) return <Navigate to="/admin" replace />
@@ -23,21 +29,22 @@ export function PortalPage() {
   const base = admin ? '/admin' : '/merchant'
   const profile = pathname === `${base}/profile`
   const notifications = pathname === `${base}/notifications`
+  if (admin && notifications) return <Navigate to="/admin/shop-alerts" replace />
   const home = admin ? '/admin' : '/merchant/dashboard'
   if (!admin && ![home, `${base}/profile`, `${base}/notifications`].includes(pathname)) return <Navigate to={home} replace />
   const suspended = tenantStatus === 'SUSPENDED'
   const ownerAccess = !suspended && session.role === 'TENANT_OWNER' && session.membershipStatus === 'ACTIVE' && session.onboardingStatus === 'COMPLETED'
-  const title = profile ? 'Your profile' : notifications ? 'Notifications' : admin ? pathname.startsWith('/admin/tenants') ? 'Tenants' : pathname === '/admin/plans' ? 'Plans & limits' : pathname === '/admin/audit' ? 'Action log' : 'Platform overview' : 'Overview'
-  const navigation = admin ? [[home, LayoutDashboard, 'Overview'], ['/admin/tenants', Building2, 'Tenants'], ['/admin/plans', CreditCard, 'Plans & limits'], ['/admin/audit', ScrollText, 'Action log'], [`${base}/profile`, CircleUserRound, 'Your profile']] : [[home, LayoutDashboard, 'Overview'], [`${base}/notifications`, Bell, 'Notifications'], [`${base}/profile`, CircleUserRound, 'Your profile']]
+  const title = profile ? 'Your profile' : notifications ? 'Notifications' : admin ? pathname.startsWith('/admin/tenants') ? 'Tenants' : pathname === '/admin/plans' ? 'Plans & limits' : pathname === '/admin/audit' ? 'Action log' : pathname === '/admin/security' ? 'Security logs' : pathname.startsWith('/admin/shop-alerts') ? 'Shop connection alerts' : pathname.startsWith('/admin/operations') ? 'Operational alerts' : 'Platform overview' : 'Overview'
+  const navigation = admin ? [[home, LayoutDashboard, 'Overview'], ['/admin/tenants', Building2, 'Tenants'], ['/admin/plans', CreditCard, 'Plans & limits'], ['/admin/shop-alerts', Link2, 'Shop alerts'], ['/admin/operations', Activity, 'Operational alerts'], ['/admin/audit', ScrollText, 'Activity log'], ['/admin/security', ShieldCheck, 'Security logs'], [`${base}/profile`, CircleUserRound, 'Your profile']] : [[home, LayoutDashboard, 'Overview'], [`${base}/notifications`, Bell, 'Notifications'], [`${base}/profile`, CircleUserRound, 'Your profile']]
   function logout() { signOutDemo(); navigate('/auth/login', { replace: true }) }
   return <div className={styles.shell}>
     <aside className={`${styles.sidebar} ${admin ? styles.platformSidebar : ''}`} aria-label="Workspace navigation">
       <div className={styles.brand}><Brand /></div>
       <div className={styles.workspace}><span className={styles.storeIcon}>{admin ? <ShieldCheck size={19} /> : <Store size={19} />}</span><div><strong>{session.tenantName || (admin ? 'SmartOmni Platform' : 'Your workspace')}</strong><span>{session.roleLabel}</span></div></div>
       <p className={styles.navLabel}>{admin ? 'PLATFORM' : 'WORKSPACE'}</p>
-      {admin && <label className={styles.platformMobileNav}><span className="sr-only">Platform navigation</span><select aria-label="Platform navigation" value={pathname.startsWith('/admin/tenants') ? '/admin/tenants' : navigation.some(([to]) => to === pathname) ? pathname : '/admin'} onChange={event => navigate(event.target.value)}>{navigation.map(([to, , label]) => <option value={to} key={to}>{label}</option>)}</select></label>}
-      <nav>{navigation.map(([to, Icon, label]) => <Link key={to} to={to} aria-current={pathname === to || (to === '/admin/tenants' && pathname.startsWith('/admin/tenants/')) ? 'page' : undefined}><Icon size={18} aria-hidden="true" />{label}{label === 'Overview' && !ownerAccess && !admin && <LockKeyhole size={14} className={styles.navLock} aria-label="Locked" />}</Link>)}</nav>
-      {ownerAccess && <><p className={styles.navLabel}>STORE OPERATIONS</p><nav>{[['orders', 'Recent orders', Package], ['inventory', 'Inventory alerts', Boxes], ['channels', 'Sales channels', Store]].map(([id, label, Icon]) => <a key={id} href={`${home}#${id}`}><Icon size={18} aria-hidden="true" />{label}</a>)}</nav></>}
+      {admin && <label className={styles.platformMobileNav}><span className="sr-only">Platform navigation</span><select aria-label="Platform navigation" value={navigation.find(([to]) => to !== '/admin' && pathname.startsWith(to))?.[0] || '/admin'} onChange={event => navigate(event.target.value)}>{navigation.map(([to, , label]) => <option value={to} key={to}>{label}</option>)}</select></label>}
+      <nav>{navigation.map(([to, Icon, label]) => <Link key={to} to={to} aria-current={pathname === to || (to !== home && pathname.startsWith(to + '/')) ? 'page' : undefined}><Icon size={18} aria-hidden="true" />{label}{label === 'Overview' && !ownerAccess && !admin && <LockKeyhole size={14} className={styles.navLock} aria-label="Locked" />}</Link>)}</nav>
+      {ownerAccess && <><p className={styles.navLabel}>STORE OPERATIONS</p><nav>{[['orders', 'Recent orders', Package], ...(tenantFeatures.inventoryAlerts ? [['inventory', 'Inventory alerts', Boxes]] : []), ['channels', 'Sales channels', Store]].map(([id, label, Icon]) => <a key={id} href={`${home}#${id}`}><Icon size={18} aria-hidden="true" />{label}</a>)}</nav></>}
       <div className={styles.sidebarBottom}><p>Demo workspace<span>Sample data. No live connections.</span></p><Button variant="ghost" onClick={logout}><LogOut size={16} aria-hidden="true" />Sign out</Button></div>
     </aside>
     <div className={styles.main}>

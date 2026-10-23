@@ -19,12 +19,21 @@ Phiên demo chỉ lưu ID fixture trong `sessionStorage`, duy trì khi reload v�
 - `/admin/tenants/:tenantId`: thông tin tenant, mức sử dụng, shop, lịch sử thao tác; khóa/mở khóa cần xác nhận và lý do. Tenant đang onboarding không có thao tác đổi quyền này.
 - `/admin/plans`: sửa mô tả/hạn mức SKU, shop, Staff; xem trước tenant bị ảnh hưởng và tenant sẽ vượt hạn mức. Free luôn giữ một shop connection. Hạn mức còn lại chỉ là dữ liệu minh họa, chưa phải quy tắc kinh doanh đã chốt. Giảm hạn mức giữ nguyên dữ liệu và hiển thị cảnh báo vượt quota, không xóa dữ liệu hoặc thu phí.
 - `/admin/audit`: tìm/lọc lịch sử theo actor, hành động, đối tượng, lý do; xuất kết quả đang lọc ra CSV.
+- `/admin/shop-alerts`: danh sách/tìm kiếm/lọc cảnh báo theo marketplace, severity, trạng thái; chi tiết lỗi, shop/tenant, thời gian, số lần và lịch sử xử lý; xuất CSV. Link chi tiết giữ bộ lọc khi đóng.
+- `/admin/operations`: cảnh báo webhook, sync job, worker queue và platform API; cùng luồng tiếp nhận/xử lý/mở lại có ghi chú và lịch sử. Đây là mô phỏng incident, không gửi retry/replay thật.
+- `/admin/security`: tìm/lọc/xem chi tiết và xuất CSV cho sự kiện bảo mật mẫu cùng sự kiện phát sinh trong bản demo: đăng nhập thành công/thất bại, đăng xuất, truy cập sai portal, thay đổi quyền tenant, hạn mức và tính năng gói.
+
+Trong `/admin/plans`, **Configure Free/Pro features** cấu hình ba tính năng đang có thực: Inventory alerts, Report export và Workspace activity. Các công tắc là bản nháp; **Save features** cần lý do, hiển thị số tenant/thay đổi bị ảnh hưởng và ghi cả Activity log lẫn Security logs. Tab Owner đang mở cập nhật ngay, giữ sau reload. Tắt Inventory alerts sẽ ẩn panel/shortcut/số liệu cảnh báo và bỏ dữ liệu cảnh báo khỏi CSV; tắt Report export sẽ chặn tải báo cáo; tắt Workspace activity sẽ ẩn feed. Danh sách sản phẩm/đơn hàng cốt lõi không thuộc bộ công tắc này. Giá trị mặc định là lựa chọn cho prototype: Free chỉ có Inventory alerts, Pro có cả ba.
+
+Luồng cảnh báo: **Open → Acknowledge alert → Acknowledged → Resolve in demo → Resolved**; có thể xử lý trực tiếp từ Open hoặc **Reopen in demo** để mô phỏng tái phát. Mỗi thao tác cần ghi chú, ghi người/thời gian và nhật ký Admin. Resolve/Reopen cảnh báo shop đồng bộ trạng thái kết nối mẫu trong chi tiết tenant và dashboard Owner; không xác thực OAuth, gọi API sàn, gửi webhook hay chạy job thật. Operational alerts chỉ mô phỏng vòng đời incident.
 
 Dữ liệu Super Admin nằm ở `src/features/platform/`, được lưu trong `localStorage` tại `smartomni.platform-demo.v1`, giữ sau reload/đăng xuất và đồng bộ thay đổi giữa các tab. Xóa key này rồi reload để quay về fixture ban đầu. Không lưu mật khẩu tại đây.
 
+Storage cũ tự bổ sung định nghĩa tính năng và cảnh báo khi đọc, giữ tenant đã khóa, hạn mức và lịch sử có sẵn. Security events phát sinh cục bộ được lưu riêng tại `smartomni.security-demo.v1` (tối đa 300 sự kiện), kèm fixture được ghi rõ nguồn. Chỉ ghi role demo và thông điệp cố định khi xác thực; không ghi email tùy ý người dùng nhập, mật khẩu hay IP. Xóa cả hai key để dọn dữ liệu mock. Browser storage có thể sửa/xóa; các log và kiểm tra quyền frontend không thay thế backend.
+
 Để kiểm thử khóa tenant: đăng nhập Admin, mở Everyday Studio và **Suspend tenant**, nhập lý do. Đăng nhập Owner ở tab khác: dashboard bị chặn; nếu tab Owner đã mở, trạng thái cập nhật ngay. Admin **Reactivate tenant** sẽ mở lại quyền. Profile, Notifications và Sign out vẫn khả dụng khi tenant bị khóa. Admin không thể vào Merchant bằng role nền tảng; Owner/Staff không tải các màn/fixture Admin.
 
-Nhật ký là dữ liệu trình duyệt có thể chỉnh/xóa, không phải audit bảo mật phía server. Advanced monitoring, RLS/security console, support, AI model history và billing chưa triển khai. Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
+Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing. Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
 
 ## Cấu trúc thư mục hiện tại
 
