@@ -17,7 +17,7 @@ export function getDemoSession() {
     const key = JSON.stringify(membership)
     if (key !== staffSnapshotKey) {
       staffSnapshotKey = key
-      staffSnapshot = { ...account, tenantId: 'demo-tenant', tenantName: 'Everyday Studio', membershipStatus: membership.status, onboardingStatus: 'COMPLETED', permissions: membership.status === 'ACTIVE' ? membership.permissions : [] }
+      staffSnapshot = { ...account, name: membership.fullName || account.name, tenantId: 'demo-tenant', tenantName: 'Everyday Studio', membershipStatus: membership.status, onboardingStatus: 'COMPLETED', permissions: membership.status === 'ACTIVE' ? membership.permissions : [] }
     }
     return staffSnapshot
   } catch { return null }

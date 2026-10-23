@@ -74,28 +74,63 @@ function readTeam() {
   return Array.isArray(value) ? value : []
 }
 function cleanPermissions(permissions) { return staffPermissions.filter(item => permissions.includes(item.id)).map(item => item.id) }
-export function inviteStaff(email, permissions) {
-  requireOwner()
-  const normalized = email.trim().toLowerCase()
+function staffEmail(email) {
+  const normalized = typeof email === 'string' ? email.trim().toLowerCase() : ''
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) throw new Error('Enter a valid email address.')
+  if (normalized.length > 254) throw new Error('Email must be 254 characters or fewer.')
   if (['owner@smartomni.demo', 'admin@smartomni.demo'].includes(normalized)) throw new Error('This account cannot be invited as staff.')
+  return normalized
+}
+function staffProfile(profile) {
+  const limits = { fullName: 100, phone: 40, jobTitle: 100, notes: 1000 }
+  const result = {}
+  for (const [field, limit] of Object.entries(limits)) {
+    const value = typeof profile[field] === 'string' ? profile[field].trim() : ''
+    if (value.length > limit) throw new Error(`${field === 'fullName' ? 'Full name' : field === 'jobTitle' ? 'Job title' : field} must be ${limit} characters or fewer.`)
+    result[field] = value
+  }
+  if (!result.fullName) throw new Error('Enter the staff member’s full name.')
+  return result
+}
+function checkStaffRevision(member, expectedRevision) {
+  if (expectedRevision && JSON.stringify(member) !== expectedRevision) throw new Error('This staff record changed in another tab. Close and reopen it before saving.')
+}
+export function inviteStaff(email, permissions, profile) {
+  requireOwner()
+  const normalized = staffEmail(email)
   const team = readTeam()
   if (team.some(item => item.email === normalized && item.status !== 'REVOKED')) throw new Error('This email already has a membership or pending invitation.')
   const allowed = cleanPermissions(permissions)
   if (!allowed.length) throw new Error('Select at least one permission.')
-  write(teamKey, [...team.filter(item => item.email !== normalized), { id: crypto.randomUUID(), email: normalized, permissions: allowed, status: 'INVITED', invitedAt: new Date().toISOString() }])
+  const details = staffProfile(profile || {})
+  const now = new Date().toISOString()
+  write(teamKey, [...team.filter(item => item.email !== normalized), { id: crypto.randomUUID(), ...details, email: normalized, permissions: allowed, status: 'INVITED', invitedAt: now, updatedAt: now }])
 }
-export function updateStaff(id, changes) {
+export function updateStaff(id, changes, expectedRevision) {
   requireOwner()
   const team = readTeam()
   const member = team.find(item => item.id === id)
   if (!member) throw new Error('This membership is no longer available.')
+  checkStaffRevision(member, expectedRevision)
   const status = changes.status || member.status
   const transitions = { INVITED: ['INVITED', 'REVOKED'], ACTIVE: ['ACTIVE', 'SUSPENDED', 'REVOKED'], SUSPENDED: ['SUSPENDED', 'ACTIVE', 'REVOKED'] }
   if (!transitions[member.status]?.includes(status)) throw new Error('This membership can no longer be changed. Refresh the page.')
   const permissions = cleanPermissions(changes.permissions || member.permissions)
   if (!permissions.length && status !== 'REVOKED') throw new Error('Select at least one permission.')
-  write(teamKey, team.map(item => item.id === id ? { ...item, status, permissions } : item))
+  const email = changes.email === undefined ? member.email : staffEmail(changes.email)
+  if (email !== member.email && member.status !== 'INVITED') throw new Error('Email cannot be changed after the invitation is accepted.')
+  if (email !== member.email && team.some(item => item.id !== id && item.email === email)) throw new Error('This email already has a staff record.')
+  const hasProfileChanges = ['fullName', 'phone', 'jobTitle', 'notes'].some(field => Object.hasOwn(changes, field))
+  const profile = hasProfileChanges ? staffProfile({ ...member, ...changes }) : {}
+  write(teamKey, team.map(item => item.id === id ? { ...item, ...profile, email, status, permissions, updatedAt: new Date().toISOString() } : item))
+}
+export function deleteStaff(id, expectedRevision) {
+  requireOwner()
+  const team = readTeam()
+  const member = team.find(item => item.id === id)
+  if (!member) throw new Error('This staff record has already been deleted.')
+  checkStaffRevision(member, expectedRevision)
+  write(teamKey, team.filter(item => item.id !== id))
 }
 export function acceptStaffInvitation(id) {
   if (sessionStorage.getItem('smartomni.demo-session') !== 'demo-staff') throw new Error('Sign in as the invited demo staff account.')
@@ -103,5 +138,6 @@ export function acceptStaffInvitation(id) {
   const team = readTeam()
   const invitation = team.find(item => item.id === id && item.email === 'staff@smartomni.demo' && item.status === 'INVITED')
   if (!invitation) throw new Error('This invitation is no longer available.')
-  write(teamKey, team.map(item => item.id === id ? { ...item, status: 'ACTIVE', acceptedAt: new Date().toISOString() } : item))
+  const now = new Date().toISOString()
+  write(teamKey, team.map(item => item.id === id ? { ...item, status: 'ACTIVE', acceptedAt: now, updatedAt: now } : item))
 }
