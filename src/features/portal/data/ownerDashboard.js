@@ -9,6 +9,9 @@ export const stockAlerts = [
   { name: 'Everyday tote · Natural', sku: 'TOTE-NAT-01', available: 3, threshold: 10 },
   { name: 'Ceramic mug · Sand', sku: 'MUG-SND-02', available: 5, threshold: 10 },
   { name: 'Linen cushion cover · Olive', sku: 'CSH-OLV-01', available: 0, threshold: 5 },
+  { name: 'Everyday tote · Charcoal', sku: 'TOTE-CHR-02', available: 2, threshold: 10 },
+  { name: 'Desk organizer · Walnut', sku: 'ORG-WAL-01', available: 4, threshold: 8 },
+  { name: 'Ceramic mug · Cloud', sku: 'MUG-CLD-03', available: 0, threshold: 10 },
 ]
 export const channels = [
   { name: 'Shopee', shop: 'Everyday Studio Official', orders: 96, state: 'Connected', synced: '10:40' },

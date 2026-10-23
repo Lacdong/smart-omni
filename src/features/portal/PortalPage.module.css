@@ -61,6 +61,15 @@
 .stats > div > span { font-size: 12px; color: var(--color-muted-foreground); line-height: 1.5; }
 .dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr); gap: 16px; margin-top: 24px; align-items: start; }
 .panel { min-width: 0; background: var(--color-background); border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; scroll-margin-top: 20px; }
+.inventoryPanel { align-self: stretch; display: flex; flex-direction: column; }
+.inventoryPanel .inventoryList { display: grid; }
+.inventoryPanel .panelNote { margin-top: auto; }
+.viewAll { flex: none; min-height: 36px; height: 36px; padding: 0; font-size: 12px; font-weight: 500; }
+.overviewDialog { max-height: calc(100svh - 48px); overflow-y: auto; }
+.allInventory { display: grid; }
+.allInventory > div { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; border-bottom: 1px solid var(--color-border); }
+.allInventory strong { display: block; font-size: 14px; font-weight: 500; }
+.allInventory div > span:not(.stockCount) { display: block; margin-top: 8px; color: var(--color-muted-foreground); font-size: 12px; }
 .panelHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 20px 16px; }
 .panelHeading h2, .accountCard h2 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: -.025em; }
 .panelHeading p { margin: 6px 0 0; color: var(--color-muted-foreground); font-size: 12px; line-height: 1.5; }
@@ -99,7 +108,7 @@
 .tableScroll th:nth-child(3) { text-align: right; }
 .selectLabel select { max-width: 132px; min-height: 36px; border: 1px solid var(--color-border); border-radius: 8px; background: white; padding: 8px; font-size: 12px; }
 .tableFoot { border-top: 1px solid var(--color-border); padding: 12px 20px; font-size: 12px; color: var(--color-muted-foreground); }
-.inventoryList button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px; text-align: left; border-top: 1px solid var(--color-border); }
+.inventoryList button { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; text-align: left; border-top: 1px solid var(--color-border); }
 .inventoryList button:hover { background: #fafafa; }
 .inventoryList strong { display: block; font-size: 12px; font-weight: 500; line-height: 1.5; }
 .inventoryList div > span { display: block; font-size: 12px; color: var(--color-muted-foreground); margin-top: 4px; }
