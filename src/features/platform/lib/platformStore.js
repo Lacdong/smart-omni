@@ -3,12 +3,17 @@ import { initialAudit, initialPlans, initialTenants } from '../data/platformFixt
 import { defaultFeatures, planFeatures } from '../data/platformFeatures'
 import { initialAlerts } from '../data/alertFixtures'
 import { recordDemoSecurityEvent } from '@/features/auth/lib/demoSecurityLog'
+import { effectivePlan, getOwnerState, ownerConnectionAlerts, ownerConnections } from '@/features/portal/lib/ownerWorkspaceStore'
 
 const key = 'smartomni.platform-demo.v1'
 const listeners = new Set()
 function normalize(stored) {
-  const alerts = Array.isArray(stored.alerts) ? stored.alerts : structuredClone(initialAlerts)
-  const tenants = stored.tenants.map(tenant => ({ ...tenant, shops: tenant.shops.map(shop => {
+  const owner = getOwnerState()
+  const baseAlerts = Array.isArray(stored.alerts) ? stored.alerts : structuredClone(initialAlerts)
+  const ownerAlerts = ownerConnectionAlerts(owner, { alerts: baseAlerts })
+  const alerts = baseAlerts.map(alert => ownerAlerts.find(item => item.id === alert.id) || alert)
+  const projected = stored.tenants.map(tenant => tenant.id === 'demo-tenant' ? { ...tenant, plan: effectivePlan(owner, tenant), shops: ownerConnections(owner, tenant, { alerts }) } : tenant)
+  const tenants = projected.map(tenant => ({ ...tenant, shops: tenant.shops.map(shop => {
     const related = alerts.filter(alert => alert.kind === 'shop' && alert.tenantId === tenant.id && alert.shopName === shop.name && alert.platform === shop.platform)
     return related.length ? { ...shop, status: related.some(alert => alert.status !== 'RESOLVED') ? 'Needs attention' : 'Connected' } : shop
   }) }))
@@ -27,8 +32,9 @@ let state = readState()
 export const getPlatformSnapshot = () => state
 export function subscribePlatform(listener) { listeners.add(listener); return () => listeners.delete(listener) }
 window.addEventListener('storage', event => {
-  if (event.key === key || event.key === null) { state = readState(); listeners.forEach(listener => listener()) }
+  if (event.key === key || event.key === 'smartomni.owner-workspace-demo.v1' || event.key === null) { state = readState(); listeners.forEach(listener => listener()) }
 })
+window.addEventListener('smartomni:owner-workspace', () => { state = readState(); listeners.forEach(listener => listener()) })
 
 function commit(next) {
   const session = getDemoSession()

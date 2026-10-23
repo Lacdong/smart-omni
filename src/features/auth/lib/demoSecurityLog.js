@@ -10,11 +10,16 @@ export function subscribeDemoSecurity(listener) { listeners.add(listener); retur
 window.addEventListener('storage', event => { if (event.key === key || event.key === null) { snapshot = read(); listeners.forEach(listener => listener()) } })
 
 // Record fixed event descriptions only; never accept passwords or arbitrary login input.
-export function recordDemoSecurityEvent({ type, severity = 'INFO', actor, result, message, resource }) {
+export function recordDemoSecurityEvent({ type, severity = 'INFO', actor, result, message, resource, tenantId }) {
   const events = read()
   const previous = events[0]
   if (type === 'ACCESS_DENIED' && previous?.type === type && previous?.actor === actor && previous?.resource === resource && Date.now() - Date.parse(previous.at) < 1000) return
-  const event = { id: crypto.randomUUID(), at: new Date().toISOString(), type, severity, actor, result, message, resource, source: 'Local demo' }
+  let associatedTenant = tenantId || null
+  if (!associatedTenant && actor === 'Tenant Owner demo') associatedTenant = 'demo-tenant'
+  if (!associatedTenant && actor === 'Tenant Staff demo') {
+    try { const team = JSON.parse(localStorage.getItem('smartomni.team-demo.v1')); if (Array.isArray(team) && team.some(member => member.email === 'staff@smartomni.demo' && member.status === 'ACTIVE')) associatedTenant = 'demo-tenant' } catch { /* An unassigned staff account has no tenant security feed. */ }
+  }
+  const event = { id: crypto.randomUUID(), at: new Date().toISOString(), type, severity, actor, result, message, resource, source: 'Local demo', tenantId: associatedTenant }
   try {
     const next = [event, ...events].slice(0, 300)
     localStorage.setItem(key, JSON.stringify(next))

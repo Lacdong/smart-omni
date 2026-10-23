@@ -1,5 +1,7 @@
 # SmartOmni — Frontend
 
+Quy ước màu nút theo yêu cầu UI: hành động chính dùng nền đen/chữ trắng, hover xám đậm; xem/sửa dùng indigo nhạt/chữ indigo; Hủy/Reset dùng xám; Xóa/Thu hồi quyền dùng đỏ nhạt/chữ đỏ. Token màu action/secondary nằm ở `src/styles/index.css`, variant ở `src/shared/ui/button.jsx`; màu thương hiệu và biểu đồ không đổi theo màu action.
+
 SmartOmni có Landing Page, Storefront, luồng đăng ký/onboarding và đăng nhập demo theo role. Merchant Portal có dashboard Owner, Store settings và Team; Staff mở workspace theo quyền đọc sau khi nhận lời mời demo. Frontend dùng **React + JavaScript/JSX + Vite**; chưa kết nối backend. Dữ liệu dashboard và marketplace đều là mock data.
 
 ## Đăng nhập demo
@@ -25,6 +27,32 @@ Các màn này giữ style sáng, phẳng và component Button/Dialog của dự
 
 UC 3.5/3.7 hiện là luồng mô phỏng: không gửi email thật, không có token hay thời hạn lời mời. Chỉ tài khoản Staff mẫu có thể đăng nhập nhận lời mời; email khác giữ pending. Hạn mức staff/subscription và số staff mẫu trong Admin chưa được nối với danh sách Team này. Phân quyền frontend và browser storage không thay thế backend; chưa có API, database hay xác thực thật. Chưa bổ sung dark mode. Test ở `tests/merchant-settings.spec.js` và `tests/staff-crud.spec.js`.
 
+## Owner — các màn UC còn lại (frontend demo)
+
+Theo yêu cầu triển khai tiếp UC Owner ngày 23/10/2026, các màn mở rộng dưới đây đã có luồng frontend; các dependency backend/AI/billing trong MASTER_PLAN vẫn chưa được triển khai. Menu **BUSINESS WORKSPACE** dẫn tới bảy nhóm; các tab trong mỗi nhóm mở từng màn. Mobile dùng dropdown Workspace page.
+
+- **3.8, 3.15 — `/merchant/subscription`**: xem Free/Pro và hạn mức mẫu theo cấu hình Admin; đổi gói cần xác nhận, có hiệu lực ngay trong demo và cập nhật quyền export/activity của dashboard giữa các tab. Hạ gói giữ dữ liệu, báo vượt số shop và chặn tạo kết nối mới vượt hạn mức. Không tính giá, proration hoặc tạo thanh toán; hạn mức Staff còn độc lập với Team.
+- **3.9, 3.10 — `/merchant/invoices`**: xem/lọc invoice mẫu và chi tiết; chỉ invoice PAID có yêu cầu refund, phải có lý do và không gửi trùng cho cùng invoice. Kết quả PENDING_REVIEW được lưu; không phê duyệt, không hoàn tiền.
+- **3.12 — `/merchant/payments`**: xem các lần thanh toán thành công/thất bại mẫu; refund request không tự tạo giao dịch hoàn tiền.
+- **3.11, 3.13 — `/merchant/shops`**: chọn marketplace, nhập tên shop, preview và xác nhận kết nối riêng; reauthorize shop có sẵn, chặn trùng hoặc vượt hạn mức gói. Không thu credentials, không chạy OAuth hay xác minh quyền sở hữu shop. Dashboard đọc cùng kết nối, kể cả shop mới.
+- **3.14 — `/merchant/shop-alerts`**: lọc/xem chi tiết cảnh báo của tenant và lịch sử. Owner reauthorize mô phỏng phục hồi; trạng thái shop/cảnh báo cũng được chiếu sang Admin. Admin reopen mới hơn sẽ trở lại Needs attention ở Owner. Không sửa storage Admin bằng quyền Owner.
+- **3.16 — `/merchant/customers`**: xem khách mẫu theo Bronze/Silver/Gold, tìm tên/email, điểm và opt-in; tier/điểm chỉ là dữ liệu mẫu.
+- **3.17 — `/merchant/vouchers`**: chọn tier và tỷ lệ giảm giá 1–100%, preview khách đủ điều kiện/bị bỏ qua, rồi xác nhận phát batch. Khách mẫu chưa opt-in bị skip. Mỗi intent preview có ID để tránh phát trùng khi submit lặp.
+- **3.18 — `/merchant/voucher-results`**: xem batch và kết quả từng người nhận, mã voucher demo hoặc lý do skip. Không tạo voucher trên sàn hay gửi email/SMS.
+- **3.19 — `/merchant/sales-events`**: nhập tên, khoảng ngày và uplift giả định; xem/xóa sự kiện đã lưu. Đây là input scenario do Owner nhập, không phải dự báo của AI.
+- **3.20 — `/merchant/forecasts`**: bảng và biểu đồ dự báo minh họa 24–30/10/2026 từ bình quân 7 ngày bán mẫu 17–23/10. Chỉ áp uplift vào ngày event trùng horizon; event trùng nhau dùng mức lớn nhất, không cộng dồn. Hiển thị tồn và shortfall theo đơn vị SKU. Không có model training, confidence interval hay metrics thật.
+- **3.23 — `/merchant/costs`**: nhập/sửa/xóa chi phí VND nguyên dương theo ngày và nhóm, lọc ledger; có xác nhận xóa và kiểm tra bản sửa/xóa cũ. Ledger ban đầu gồm ba chi phí mẫu được ghi rõ nguồn.
+- **3.24 — `/merchant/profit`**: theo khoảng ngày, doanh thu mẫu trừ các chi phí ghi nhận cùng kỳ; hiển thị breakdown nhóm chi phí và cảnh báo thiếu coverage ngoài 17–23/10/2026. Đây là **demo profit estimate**, chưa phải lợi nhuận thực được kiểm chứng vì chưa có dữ liệu doanh thu/thuế/hoàn hàng thật.
+- **3.25 — `/merchant/advisor`**: nhập câu hỏi, chọn prompt và xem lịch sử lưu; câu trả lời là template local về kho/dự báo, chi phí/lợi nhuận, loyalty. Câu ngoài phạm vi có phản hồi rõ; không gọi model hoặc truyền câu hỏi ra ngoài.
+- **3.26 — `/merchant/strategy`**: quan sát rule-based từ forecast scenario, số entry chi phí và batch voucher hiện tại, có link tới màn kiểm tra nguồn; không trình bày như AI tư vấn thật.
+- **3.27 — `/merchant/logs`**: tìm nhật ký Owner phát sinh từ các luồng mới và thay đổi settings/staff, chuyển Activity/Security và lọc kết quả security. Security chỉ hiển thị event có tenantId demo-tenant; không đưa global Admin hoặc tenant khác vào feed Owner. Event cũ chưa có tenantId không được tự gán tenant.
+
+Workspace data lưu tại `smartomni.owner-workspace-demo.v1`, giữ sau reload/đăng xuất và đồng bộ giữa các tab. Reset key này để bỏ gói đã đổi, shop overrides, batch voucher, sales events, cost edits, hội thoại và audit; ledger quay về ba fixture ban đầu. Chỉ ghi key khi có mutation; đọc dashboard/đăng nhập không khởi tạo dữ liệu ngầm. Lỗi ghi storage báo trên form/dialog và giữ dữ liệu trước đó. Các mutation yêu cầu Owner demo và tenant không SUSPENDED; route Staff/Admin không tải các màn Owner.
+
+UI giữ tông sáng, component Button/Dialog, CSS Modules và token tại `src/styles/index.css`; style nhóm mới tại `src/features/portal/OwnerWorkspace.module.css`. Không thêm dark mode. Kiểm thử mới ở `tests/owner-workspace.spec.js`; dữ liệu mẫu ở `src/features/portal/data/ownerWorkspace.js`.
+
+**Phần chưa hoàn thành đầu cuối:** xác thực thật; đăng ký/cấp subdomain (3.2); API/database/RLS; email/token invitation; marketplace OAuth/sync; payment gateway, tax invoice, pricing/refund policy; loyalty service/voucher delivery; forecasting/AI model và nguồn dữ liệu để tính actual profit. Các màn demo không thay thế những tích hợp này.
+
 ## Super Admin — prototype
 
 - `/admin`: tổng quan từ 8 tenant mẫu, trạng thái, số shop, phân bổ gói và những workspace cần xem lại.
@@ -46,7 +74,7 @@ Storage cũ tự bổ sung định nghĩa tính năng và cảnh báo khi đọc
 
 Để kiểm thử khóa tenant: đăng nhập Admin, mở Everyday Studio và **Suspend tenant**, nhập lý do. Đăng nhập Owner ở tab khác: dashboard bị chặn; nếu tab Owner đã mở, trạng thái cập nhật ngay. Admin **Reactivate tenant** sẽ mở lại quyền. Profile, Notifications và Sign out vẫn khả dụng khi tenant bị khóa. Admin không thể vào Merchant bằng role nền tảng; Owner/Staff không tải các màn/fixture Admin.
 
-Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing. Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
+Reset password được bỏ khỏi phạm vi theo yêu cầu. Chưa có hệ thống monitoring thật, RLS enforcement/thu thập log server, support, AI model history hoặc billing thật (Owner đã có các màn billing demo mô tả ở trên). Font và màu chung giữ ở `src/styles/index.css`; style Admin ở `src/features/platform/Platform.module.css`. Chưa có dark mode.
 
 ## Deploy lên Vercel
 

@@ -17,10 +17,11 @@
 .sidebarBottom { margin-top: auto; padding: 32px 12px 0; }
 .sidebarBottom p { font-size: 12px; font-weight: 550; }
 .sidebarBottom p span { display: block; margin-top: 6px; font-size: 12px; line-height: 1.6; color: var(--color-muted-foreground); font-weight: 400; }
-.sidebarBottom button { justify-content: start; margin-top: 12px; width: 100%; min-height: 40px; box-shadow: none; }
+.sidebarBottom button { justify-content: start; margin-top: 12px; width: 100%; min-height: 40px; box-shadow: none; background: var(--color-danger-soft); color: var(--color-destructive); }
 .sidebarBottom button:hover { background: #fff1f2; color: #be123c; }
 .main { min-width: 0; }
 .platformMobileNav { display: none; }
+@media (max-width: 700px) { .sidebar nav:nth-of-type(3) { display: none; } }
 @media (max-width: 700px) {
   .platformSidebar nav { display: none !important; }
   .platformMobileNav { display: block; }
@@ -39,7 +40,7 @@
   .tableScroll td:first-child { white-space: normal; }
   .mobileOrderMeta { display: block; margin-top: 4px; color: #666; font-size: 12px; }
 }
-.mobileLogout { display: none; }
+.mobileLogout { display: none; background: var(--color-danger-soft); color: var(--color-destructive); }
 @media (max-width: 700px) { .mobileLogout { display: inline-flex; } .topbar .demoBadge { display: none; } }
 .topbar { min-height: 72px; padding: 16px 32px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--color-background); font-size: 12px; color: var(--color-muted-foreground); }
 .topbar strong { font-weight: 500; color: var(--color-foreground); }
@@ -53,12 +54,14 @@
 .pageHeading > p { margin: 0 0 12px; color: var(--color-muted-foreground); font-size: 12px; letter-spacing: .12em; font-weight: 550; }
 .pageHeading h1 { margin: 0; font-size: 24px; line-height: 1.3; letter-spacing: -.035em; font-weight: 600; }
 .pageHeading > span { display: block; margin-top: 8px; color: var(--color-muted-foreground); font-size: 13px; line-height: 1.6; text-wrap: pretty; }
-.outline { min-height: 40px; border-radius: 12px; background: #fff; border-color: var(--color-border); box-shadow: none; font-size: 12px; }
+.outline { min-height: 40px; border-radius: 12px; background: var(--color-action); color: white; border-color: transparent; box-shadow: none; font-size: 12px; }
+.outline:hover { background: var(--color-action-hover); color: white; }
+.outline:disabled { background: var(--color-muted); color: var(--color-muted-foreground); border-color: var(--color-border); }
 .periodBar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-block: 24px 16px; }
 .periodBar > span { display: flex; align-items: center; gap: 8px; color: #666; font-size: 12px; }
 .periodTabs { display: flex; gap: 4px; }
 .periodTabs button { min-height: 36px; padding: 8px 12px; border-radius: 8px; background: transparent; font-size: 12px; color: #666; }
-.periodTabs button[aria-pressed='true'] { background: var(--color-background); color: var(--color-foreground); font-weight: 550; }
+.periodTabs button[aria-pressed='true'] { background: var(--color-action); color: white; font-weight: 550; }
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--color-background); border: 1px solid var(--color-border); border-radius: 12px; }
 .stats > div { min-width: 0; padding: 20px; border-right: 1px solid var(--color-border); }
 .stats > div:last-child { border-right: 0; }

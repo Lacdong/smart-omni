@@ -40,7 +40,7 @@ function SettingsForm({ section, initial }) {
         <label className={styles.field}>Catalog spacing<select name="density" value={draft.density} onChange={change}><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></label>
         <div className={styles.preview} aria-label="Appearance draft preview">{draft.announcement && <span>{draft.announcement}</span>}<h2>{draft.headline || 'Your storefront headline'}</h2><p>{draft.accent} palette · {draft.density} spacing</p></div>
       </>}
-      <div className={styles.actions}><Button type="submit">Save changes</Button><Button type="button" variant="outline" onClick={() => { setDraft(initial); setFeedback(null) }}>Discard changes</Button></div>
+      <div className={styles.actions}><Button type="submit">Save changes</Button><Button type="button" variant="secondary" onClick={() => { setDraft(initial); setFeedback(null) }}>Discard changes</Button></div>
       {feedback && <p role={feedback.error ? 'alert' : 'status'} className={`${styles.notice} ${feedback.error ? styles.error : ''}`}>{feedback.message}</p>}
     </form>
   </section>

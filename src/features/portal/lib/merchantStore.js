@@ -1,4 +1,5 @@
 import { useMemo, useSyncExternalStore } from 'react'
+import { recordOwnerSettingActivity } from './ownerAudit'
 
 export const settingsKey = 'smartomni.store-settings-demo.v1'
 export const teamKey = 'smartomni.team-demo.v1'
@@ -44,6 +45,7 @@ function normalizeSettings(value) {
 }
 function write(key, value) {
   try { localStorage.setItem(key, JSON.stringify(value)) } catch { throw new Error('Could not save. Allow browser storage and try again.') }
+  recordOwnerSettingActivity(key === settingsKey ? 'Store settings updated' : 'Staff directory updated')
   window.dispatchEvent(new Event(changeEvent))
   window.dispatchEvent(new Event('smartomni:demo-session'))
 }
